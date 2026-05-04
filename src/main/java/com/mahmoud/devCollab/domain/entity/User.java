@@ -1,0 +1,49 @@
+package com.mahmoud.devCollab.domain.entity;
+
+import com.mahmoud.devCollab.domain.enums.Role;
+import com.mahmoud.devCollab.domain.relation.Member;
+import com.mahmoud.devCollab.domain.relation.UserSkill;
+import com.mahmoud.devCollab.domain.relation.UserTask;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "users")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "username")
+    private String username;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "password")
+    private String password;
+
+    @Column(name = "role")
+    @Enumerated(value = EnumType.STRING)
+    private Role role;
+
+    @Column(name = "bio")
+    private String bio;
+
+    @OneToMany(mappedBy = "user")
+    private Set<UserSkill> skills = new HashSet<>();
+
+    @OneToMany(mappedBy = "member")
+    private Set<Member> memberships = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    private Set<UserTask> tasks = new HashSet<>();
+}

@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: devCollab
+
+  datasource:
+    url: ${DATASOURCE_URL}
+    username: ${DATASOURCE_USER}
+    password: ${DATASOURCE_PASSWORD}
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    schemas: dev_collab
+
+  jwt:
+    secret: ${JWT_SECRET}
+    accessTokenExpiration: 3600        #1h
+    refreshTokenExpiration: 604800     #7d
