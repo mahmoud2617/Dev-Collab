@@ -1,6 +1,6 @@
 CREATE SCHEMA IF NOT EXISTS dev_collab;
 
-CREATE TYPE dev_collab.role AS ENUM ('ADMIN', 'USER', 'GUEST');
+CREATE TYPE dev_collab.role AS ENUM ('ADMIN', 'USER');
 CREATE TYPE dev_collab.task_status AS ENUM ('TODO', 'IN_PROGRESS', 'DONE');
 CREATE TYPE dev_collab.member_role AS ENUM ('OWNER', 'ADMIN', 'MEMBER');
 

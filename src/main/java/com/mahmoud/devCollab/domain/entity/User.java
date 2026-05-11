@@ -6,6 +6,8 @@ import com.mahmoud.devCollab.domain.relation.UserSkill;
 import com.mahmoud.devCollab.domain.relation.UserTask;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -33,6 +35,7 @@ public class User {
 
     @Column(name = "role")
     @Enumerated(value = EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private Role role;
 
     @Column(name = "bio")

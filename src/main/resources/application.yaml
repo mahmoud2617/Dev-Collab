@@ -7,6 +7,13 @@ spring:
     username: ${DATASOURCE_USER}
     password: ${DATASOURCE_PASSWORD}
 
+  jpa:
+    properties:
+      hibernate:
+        default_schema: dev_collab
+
+    show-sql: true
+
   flyway:
     enabled: true
     locations: classpath:db/migration

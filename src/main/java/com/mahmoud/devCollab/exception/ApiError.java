@@ -1,22 +1,30 @@
 package com.mahmoud.devCollab.exception;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-@AllArgsConstructor
 @Getter
 public class ApiError {
     private Integer status;
     private String message;
     private LocalDateTime timestamp;
 
-    public static ApiError unauthorized(Integer status, String message) {
-        return new ApiError(status, message, LocalDateTime.now());
+    private ApiError(Integer status, String message) {
+        this.status = status;
+        this.message = message;
+        this.timestamp = LocalDateTime.now();
     }
 
-    public static ApiError notFound() {
-        return new ApiError(404, "User not found.", LocalDateTime.now());
+    public static ApiError unauthorized(String message) {
+        return new ApiError(401, message);
+    }
+
+    public static ApiError notFound(String message) {
+        return new ApiError(404, message);
+    }
+
+    public static ApiError badRequest(String message) {
+        return new ApiError(400, message);
     }
 }
