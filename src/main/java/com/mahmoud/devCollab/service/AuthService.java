@@ -6,20 +6,25 @@ import com.mahmoud.devCollab.domain.enums.Role;
 import com.mahmoud.devCollab.dto.JwtResponse;
 import com.mahmoud.devCollab.dto.LoginDto;
 import com.mahmoud.devCollab.dto.RegisterDto;
-import com.mahmoud.devCollab.exception.BadCredentialsException;
 import com.mahmoud.devCollab.exception.UnauthorizedUserException;
 import com.mahmoud.devCollab.repository.UserRepository;
+import com.mahmoud.devCollab.security.CustomUserDetails;
 import com.mahmoud.devCollab.security.jwt.Jwt;
 import com.mahmoud.devCollab.security.jwt.JwtService;
+import com.mahmoud.devCollab.security.jwt.Token;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
 public class AuthService {
+    private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -39,19 +44,24 @@ public class AuthService {
     }
 
     public JwtResponse login(LoginDto loginDto, HttpServletResponse response) {
-        User user = userRepository.findByUsername(loginDto.getUsernameOrEmail()).orElse(null);
+        Authentication authentication = authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                loginDto.getUsernameOrEmail(),
+                loginDto.getPassword()
+            )
+        );
 
-        if (user == null) {
-            user = userRepository.findByEmail(loginDto.getUsernameOrEmail())
-                    .orElseThrow(() -> new BadCredentialsException("Invalid username or email."));
-        }
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-        if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
-            throw new BadCredentialsException("Invalid password.");
-        }
+        Token token = new Token(
+            userDetails.getId(),
+            userDetails.getUsername(),
+            userDetails.getEmail(),
+            userDetails.getRole()
+        );
 
-        Jwt accessToken = jwtService.generateAccessToken(user);
-        Jwt refreshToken = jwtService.generateRefreshToken(user);
+        Jwt accessToken = jwtService.generateAccessToken(token);
+        Jwt refreshToken = jwtService.generateRefreshToken(token);
 
         Cookie cookie = new Cookie("refreshToken", refreshToken.toString());
         cookie.setHttpOnly(true);
@@ -73,7 +83,9 @@ public class AuthService {
         User user = userRepository.findByUsername(jwt.getUsername())
                 .orElseThrow(UnauthorizedUserException::new);
 
-        Jwt accessToken = jwtService.generateAccessToken(user);
+        Jwt accessToken = jwtService.generateAccessToken(
+            new Token(user.getId(), user.getUsername(), user.getEmail(), user.getRole())
+        );
 
         return new JwtResponse(accessToken.toString());
     }

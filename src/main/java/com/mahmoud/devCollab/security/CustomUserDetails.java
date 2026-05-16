@@ -15,12 +15,14 @@ public class CustomUserDetails implements UserDetails {
     private Long id;
     private String username;
     private String email;
+    private String password;
     private Role role;
 
     public CustomUserDetails(User user) {
         this.id = user.getId();
         this.username = user.getUsername();
         this.email = user.getEmail();
+        this.password = user.getPassword();
         this.role = user.getRole();
     }
 
@@ -43,6 +45,6 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return "";
+        return password;
     }
 }

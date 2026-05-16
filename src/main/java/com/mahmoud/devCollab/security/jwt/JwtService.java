@@ -1,7 +1,6 @@
 package com.mahmoud.devCollab.security.jwt;
 
 import com.mahmoud.devCollab.config.JwtConfig;
-import com.mahmoud.devCollab.domain.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -15,20 +14,20 @@ import java.util.Date;
 public class JwtService {
     private final JwtConfig jwtConfig;
 
-    public Jwt generateAccessToken(User user) {
-        return generateToken(user, jwtConfig.getAccessTokenExpiration());
+    public Jwt generateAccessToken(Token userToken) {
+        return generateToken(userToken, jwtConfig.getAccessTokenExpiration());
     }
 
-    public Jwt generateRefreshToken(User user) {
-        return generateToken(user, jwtConfig.getRefreshTokenExpiration());
+    public Jwt generateRefreshToken(Token userToken) {
+        return generateToken(userToken, jwtConfig.getRefreshTokenExpiration());
     }
 
-    private Jwt generateToken(User user, long tokenExpiration) {
+    private Jwt generateToken(Token userToken, long tokenExpiration) {
         Claims claims = Jwts.claims()
-                .subject(user.getId().toString())
-                .add("username", user.getUsername())
-                .add("email", user.getEmail())
-                .add("role", user.getRole())
+                .subject(userToken.id().toString())
+                .add("username", userToken.username())
+                .add("email", userToken.email())
+                .add("role", userToken.role())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 * tokenExpiration))
                 .build();
