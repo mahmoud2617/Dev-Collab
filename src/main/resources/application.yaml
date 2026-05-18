@@ -19,7 +19,29 @@ spring:
     locations: classpath:db/migration
     schemas: dev_collab
 
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+
+    properties:
+      mail:
+        smtp:
+          auth: true
+
+          starttls:
+            enable: true
+
+app:
   jwt:
     secret: ${JWT_SECRET}
-    accessTokenExpiration: 3600        #1h
-    refreshTokenExpiration: 604800     #7d
+    accessTokenExpiration: 1200                             #20m
+    refreshTokenExpiration: 604800                          #7d
+
+  verification:
+    emailVerificationTokenExpiration: 1800                  #30m
+    otpVerificationTokenExpiration: 300                     #5m
+    resetPasswordSessionVerificationTokenExpiration: 900    #15m
+
+  websiteUrl: http://localhost/api

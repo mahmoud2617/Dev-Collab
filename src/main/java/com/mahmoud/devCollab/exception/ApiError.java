@@ -27,4 +27,8 @@ public class ApiError {
     public static ApiError badRequest(String message) {
         return new ApiError(400, message);
     }
+
+    public static ApiError forbidden(String message) {
+        return new ApiError(403, message);
+    }
 }

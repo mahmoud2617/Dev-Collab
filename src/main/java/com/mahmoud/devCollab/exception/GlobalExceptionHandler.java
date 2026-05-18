@@ -59,4 +59,24 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(401).build();
     }
+
+    @ExceptionHandler(InvalidRequestDataException.class)
+    public ResponseEntity<ApiError> handleInvalidRequestDataException(
+        InvalidRequestDataException exception
+    ) {
+        String message = exception.getMessage() != null
+            ? exception.getMessage()
+            : "Invalid request data.";
+
+        return ResponseEntity.badRequest().body(
+            ApiError.badRequest(message)
+        );
+    }
+
+    @ExceptionHandler(EmailNotVerifiedException.class)
+    public ResponseEntity<ApiError> handleEmailNotVerifiedException() {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
+            ApiError.forbidden("Email Not verified.")
+        );
+    }
 }

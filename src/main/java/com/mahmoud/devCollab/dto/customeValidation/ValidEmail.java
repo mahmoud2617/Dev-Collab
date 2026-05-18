@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
 @Size(max = 250, message = "Email must not be more than 250 character.")
 @Constraint(validatedBy = {})
 public @interface ValidEmail {
-    String message() default "Invalid username.";
+    String message() default "Invalid password.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

@@ -1,6 +1,7 @@
 CREATE SCHEMA IF NOT EXISTS dev_collab;
 
 CREATE TYPE dev_collab.role AS ENUM ('ADMIN', 'USER');
+CREATE TYPE dev_collab.verification_token_type AS ENUM ('EMAIL_VERIFICATION', 'PASSWORD_RESET', 'PASSWORD_RESET_SESSION');
 CREATE TYPE dev_collab.task_status AS ENUM ('TODO', 'IN_PROGRESS', 'DONE');
 CREATE TYPE dev_collab.member_role AS ENUM ('OWNER', 'ADMIN', 'MEMBER');
 
@@ -8,9 +9,22 @@ CREATE TABLE dev_collab.users (
     id BIGSERIAL PRIMARY KEY,
     username VARCHAR(150) NOT NULL UNIQUE,
     email VARCHAR(250) NOT NULL UNIQUE,
-    password VARCHAR(250) NOT NULL,
+    password VARCHAR(250) NOT NULL UNIQUE,
     role dev_collab.role NOT NULL,
+    enabled BOOLEAN NOT NULL DEFAULT FALSE,
     bio TEXT
+);
+
+CREATE TABLE dev_collab.verification_tokens (
+    id UUID PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    token VARCHAR(64) NOT NULL,
+    token_type dev_collab.verification_token_type NOT NULL,
+    expiration_date TIMESTAMP NOT NULL,
+
+    CONSTRAINT auth_tokens_users_fk
+        FOREIGN KEY (user_id) REFERENCES dev_collab.users (id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE dev_collab.skills (

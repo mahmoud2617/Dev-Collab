@@ -38,8 +38,14 @@ public class User {
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private Role role;
 
+    @Column(name = "enabled")
+    private Boolean enabled;
+
     @Column(name = "bio")
     private String bio;
+
+    @OneToMany(mappedBy = "user")
+    private Set<AuthToken> authTokens = new HashSet<>();
 
     @OneToMany(mappedBy = "user")
     private Set<UserSkill> skills = new HashSet<>();

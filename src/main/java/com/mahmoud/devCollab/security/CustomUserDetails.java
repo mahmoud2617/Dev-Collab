@@ -17,6 +17,7 @@ public class CustomUserDetails implements UserDetails {
     private String email;
     private String password;
     private Role role;
+    private Boolean enabled;
 
     public CustomUserDetails(User user) {
         this.id = user.getId();
@@ -24,6 +25,7 @@ public class CustomUserDetails implements UserDetails {
         this.email = user.getEmail();
         this.password = user.getPassword();
         this.role = user.getRole();
+        this.enabled = user.getEnabled();
     }
 
     public CustomUserDetails(Long id, String username, String email, Role role) {
