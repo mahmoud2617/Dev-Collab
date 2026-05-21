@@ -1,5 +1,6 @@
 package com.mahmoud.devCollab.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -28,6 +29,17 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleHttpMessageNotReadableException() {
         return ResponseEntity.badRequest().body(
             ApiError.badRequest("Invalid request body.")
+        );
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiError> handleDataIntegrityViolationException(
+        DataIntegrityViolationException exception
+    ) {
+        String message = "Data integrity violation: " + exception.getMostSpecificCause().getMessage();
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+            ApiError.conflict(message)
         );
     }
 

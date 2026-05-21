@@ -14,5 +14,5 @@ public class PasswordResetSessionRequest {
 
     @NotNull(message = "Code is required.")
     @Pattern(regexp = "^\\d{6}$", message = "Code must be exactly 6 digits.")
-    private Integer code;
+    private String code;
 }

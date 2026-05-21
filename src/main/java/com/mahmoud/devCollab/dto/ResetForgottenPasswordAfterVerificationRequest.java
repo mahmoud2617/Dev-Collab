@@ -12,7 +12,7 @@ public class ResetForgottenPasswordAfterVerificationRequest {
     @ValidEmail
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "Reset Token is required")
     private String resetToken;
 
     @ValidPassword

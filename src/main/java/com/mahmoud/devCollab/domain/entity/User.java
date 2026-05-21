@@ -45,7 +45,10 @@ public class User {
     private String bio;
 
     @OneToMany(mappedBy = "user")
-    private Set<AuthToken> authTokens = new HashSet<>();
+    private Set<VerificationToken> verificationTokens = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    private Set<RefreshToken> refreshTokens = new HashSet<>();
 
     @OneToMany(mappedBy = "user")
     private Set<UserSkill> skills = new HashSet<>();

@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @NotBlank(message = "Email is required.")
 @Email
-@Size(max = 250, message = "Email must not be more than 250 character.")
+@Size(max = 250, message = "Email must not be more than {max} character.")
 @Constraint(validatedBy = {})
 public @interface ValidEmail {
     String message() default "Invalid password.";

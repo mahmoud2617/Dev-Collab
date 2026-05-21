@@ -1,12 +1,14 @@
 package com.mahmoud.devCollab.service.auth;
 
 import com.mahmoud.devCollab.config.JwtConfig;
+import com.mahmoud.devCollab.domain.entity.RefreshToken;
 import com.mahmoud.devCollab.domain.entity.User;
 import com.mahmoud.devCollab.domain.enums.Role;
 import com.mahmoud.devCollab.dto.*;
 import com.mahmoud.devCollab.exception.EmailNotVerifiedException;
 import com.mahmoud.devCollab.exception.InvalidRequestDataException;
 import com.mahmoud.devCollab.exception.UnauthorizedUserException;
+import com.mahmoud.devCollab.repository.RefreshTokenRepository;
 import com.mahmoud.devCollab.repository.UserRepository;
 import com.mahmoud.devCollab.security.CustomUserDetails;
 import com.mahmoud.devCollab.security.jwt.Jwt;
@@ -18,6 +20,7 @@ import com.mahmoud.devCollab.service.token.EmailVerificationService;
 import com.mahmoud.devCollab.service.token.PasswordResetSessionVerificationService;
 import com.mahmoud.devCollab.service.token.PasswordResetVerificationService;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,6 +31,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Objects;
 
 @Service
@@ -35,6 +40,7 @@ import java.util.Objects;
 public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final EmailVerificationEmailService emailVerificationEmailService;
@@ -73,6 +79,7 @@ public class AuthService {
         emailVerificationEmailService.sendVerificationEmail(user,token);
     }
 
+    @Transactional
     public JwtResponse login(LoginDto loginDto, HttpServletResponse response) {
         Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
@@ -97,10 +104,18 @@ public class AuthService {
         Jwt accessToken = jwtService.generateAccessToken(token);
         Jwt refreshToken = jwtService.generateRefreshToken(token);
 
+        RefreshToken refreshTokenEntity = RefreshToken.builder()
+                .token(refreshToken.toString())
+                .createdAt(LocalDateTime.now())
+                .user(userRepository.findById(userDetails.getId()).orElseThrow())
+                .build();
+
+        refreshTokenRepository.save(refreshTokenEntity);
+
         Cookie cookie = new Cookie("refreshToken", refreshToken.toString());
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
-        cookie.setPath("/auth/refresh");
+        cookie.setPath("/auth");
         cookie.setMaxAge(jwtConfig.getRefreshTokenExpiration());
         response.addCookie(cookie);
 
@@ -113,6 +128,9 @@ public class AuthService {
         if (jwt == null || jwt.isExpired()) {
             throw new UnauthorizedUserException();
         }
+
+        refreshTokenRepository.findByToken(jwt.toString())
+                .orElseThrow(UnauthorizedUserException::new);
 
         User user = userRepository.findByUsername(jwt.getUsername())
                 .orElseThrow(UnauthorizedUserException::new);
@@ -132,6 +150,7 @@ public class AuthService {
         emailVerificationService.deleteTokens(user);
     }
 
+    @Transactional
     public void resendEmailVerification(ResendEmailVerificationRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElse(null);
@@ -145,6 +164,7 @@ public class AuthService {
         }
     }
 
+    @Transactional
     public void changePassword(ChangePasswordRequest request) {
         User user = userRepository.findById(getCurrentUser().getId())
                 .orElseThrow(UnauthorizedUserException::new);
@@ -154,10 +174,9 @@ public class AuthService {
         }
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-
-        userRepository.save(user);
     }
 
+    @Transactional
     public void forgetPassword(String email) {
         User user = userRepository.findByEmail(email)
                 .orElse(null);
@@ -173,10 +192,13 @@ public class AuthService {
 
     @Transactional
     public PasswordResetSessionResponse verifyPasswordResetOtp(PasswordResetSessionRequest request) {
-        User user = passwordResetVerificationService.validateToken(String.valueOf(request.getCode()));
+        User user = passwordResetVerificationService.validateToken(request.getCode());
+
+        if (!Objects.equals(user.getEmail(), request.getEmail())) {
+            throw new InvalidRequestDataException("Invalid email or OTP.");
+        }
 
         passwordResetVerificationService.deleteTokens(user);
-
         String resetToken = passwordResetSessionVerificationService.createToken(user);
 
         return new PasswordResetSessionResponse(resetToken);
@@ -186,20 +208,31 @@ public class AuthService {
     public void resetForgottenPassword(ResetForgottenPasswordAfterVerificationRequest request) {
         User user = passwordResetSessionVerificationService.validateToken(request.getResetToken());
 
-        if (Objects.equals(user.getEmail(), request.getEmail())) {
-            user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-
-            userRepository.save(user);
-
-            passwordResetSessionVerificationService.deleteTokens(user);
+        if (!Objects.equals(user.getEmail(), request.getEmail())) {
+            throw new InvalidRequestDataException("Invalid email or reset token.");
         }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+
+        userRepository.save(user);
+
+        passwordResetSessionVerificationService.deleteTokens(user);
     }
 
-    public void logout(HttpServletResponse response) {
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        if (request.getCookies() != null) {
+            Arrays.stream(request.getCookies())
+                    .filter(cookie -> "refreshToken".equals(cookie.getName()))
+                    .findFirst()
+                    .ifPresent(cookie -> {
+                        refreshTokenRepository.deleteByToken(cookie.getValue());
+                    });
+        }
+
         Cookie cookie = new Cookie("refreshToken", "");
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
-        cookie.setPath("/auth/refresh");
+        cookie.setPath("/auth");
         cookie.setMaxAge(0);
         response.addCookie(cookie);
     }

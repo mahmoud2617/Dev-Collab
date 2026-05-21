@@ -1,11 +1,13 @@
 package com.mahmoud.devCollab.domain.entity;
 
+import com.mahmoud.devCollab.domain.base.BaseUuidEntity;
 import com.mahmoud.devCollab.domain.enums.VerificationTokenType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Table(name = "verification_tokens")
@@ -13,16 +15,13 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class VerificationToken {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-
+public class VerificationToken extends BaseUuidEntity {
     @Column(name = "token")
     private String token;
 
     @Column(name = "token_type")
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private VerificationTokenType tokenType;
 
     @Column(name = "expiration_date")

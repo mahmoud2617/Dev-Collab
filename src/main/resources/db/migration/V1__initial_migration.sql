@@ -22,7 +22,18 @@ CREATE TABLE dev_collab.verification_tokens (
     token_type dev_collab.verification_token_type NOT NULL,
     expiration_date TIMESTAMP NOT NULL,
 
-    CONSTRAINT auth_tokens_users_fk
+    CONSTRAINT verification_tokens_users_fk
+        FOREIGN KEY (user_id) REFERENCES dev_collab.users (id)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE dev_collab.refresh_tokens (
+    id UUID PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    refresh_token TEXT NOT NULL UNIQUE,
+    created_at TIMESTAMP NOT NULL,
+
+    CONSTRAINT refresh_tokens_users_fk
         FOREIGN KEY (user_id) REFERENCES dev_collab.users (id)
         ON DELETE CASCADE
 );

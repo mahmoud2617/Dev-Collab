@@ -2,6 +2,7 @@ package com.mahmoud.devCollab.controller;
 
 import com.mahmoud.devCollab.dto.*;
 import com.mahmoud.devCollab.service.auth.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -43,7 +44,7 @@ public class AuthController {
         @RequestParam String token
     ) {
         authService.verifyEmail(token);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/resend-email-verification")
@@ -87,8 +88,8 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(HttpServletResponse response) {
-        authService.logout(response);
+    public ResponseEntity<Void> logout(HttpServletRequest request, HttpServletResponse response) {
+        authService.logout(request, response);
         return ResponseEntity.noContent().build();
     }
 }

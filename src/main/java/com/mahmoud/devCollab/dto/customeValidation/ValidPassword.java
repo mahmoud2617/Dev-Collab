@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @NotBlank(message = "Password is required.")
-@Size(max = 250, message = "Password must not be more than 250 character.")
+@Size(min = 8, max = 250, message = "Password must be between {min} and {max} characters.")
 @Constraint(validatedBy = {})
 public @interface ValidPassword {
     String message() default "Invalid password.";

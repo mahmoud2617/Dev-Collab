@@ -31,4 +31,8 @@ public class ApiError {
     public static ApiError forbidden(String message) {
         return new ApiError(403, message);
     }
+
+    public static ApiError conflict(String message) {
+        return new ApiError(409, message);
+    }
 }
