@@ -52,7 +52,7 @@ CREATE TABLE dev_collab.refresh_tokens (
 
 CREATE TABLE dev_collab.skills (
     id BIGSERIAL PRIMARY KEY,
-    skill VARCHAR(255) NOT NULL UNIQUE
+    name VARCHAR(255) NOT NULL UNIQUE
 );
 
 CREATE TABLE dev_collab.user_skills (
@@ -87,7 +87,7 @@ CREATE TABLE dev_collab.projects (
 
 CREATE TABLE dev_collab.tech_stacks (
     id BIGSERIAL PRIMARY KEY,
-    tech_stack VARCHAR(255) NOT NULL UNIQUE
+    name VARCHAR(255) NOT NULL UNIQUE
 );
 
 CREATE TABLE dev_collab.project_tech_stacks (
