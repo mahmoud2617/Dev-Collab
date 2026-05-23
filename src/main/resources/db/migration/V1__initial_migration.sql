@@ -9,10 +9,22 @@ CREATE TABLE dev_collab.users (
     id BIGSERIAL PRIMARY KEY,
     username VARCHAR(150) NOT NULL UNIQUE,
     email VARCHAR(250) NOT NULL UNIQUE,
-    password VARCHAR(250) NOT NULL UNIQUE,
+    password VARCHAR(250) NOT NULL,
     role dev_collab.role NOT NULL,
-    enabled BOOLEAN NOT NULL DEFAULT FALSE,
-    bio TEXT
+    enabled BOOLEAN NOT NULL DEFAULT FALSE
+);
+
+CREATE TABLE dev_collab.profiles (
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL UNIQUE,
+    profile_picture_url TEXT,
+    bio VARCHAR(500),
+    created_at TIMESTAMP NOT NULL DEFAULT LOCALTIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT LOCALTIMESTAMP,
+
+    CONSTRAINT profiles_users_fk
+        FOREIGN KEY (user_id) REFERENCES dev_collab.users (id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE dev_collab.verification_tokens (
@@ -31,7 +43,7 @@ CREATE TABLE dev_collab.refresh_tokens (
     id UUID PRIMARY KEY,
     user_id BIGINT NOT NULL,
     refresh_token TEXT NOT NULL UNIQUE,
-    created_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT LOCALTIMESTAMP,
 
     CONSTRAINT refresh_tokens_users_fk
         FOREIGN KEY (user_id) REFERENCES dev_collab.users (id)
@@ -43,7 +55,7 @@ CREATE TABLE dev_collab.skills (
     skill VARCHAR(255) NOT NULL UNIQUE
 );
 
-CREATE TABLE dev_collab.users_skills (
+CREATE TABLE dev_collab.user_skills (
     id BIGSERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL,
     skill_id BIGINT NOT NULL,
@@ -78,7 +90,7 @@ CREATE TABLE dev_collab.tech_stacks (
     tech_stack VARCHAR(255) NOT NULL UNIQUE
 );
 
-CREATE TABLE dev_collab.projects_tech_stacks (
+CREATE TABLE dev_collab.project_tech_stacks (
     id BIGSERIAL PRIMARY KEY,
     project_id BIGINT NOT NULL,
     tech_stack_id BIGINT NOT NULL,
@@ -95,17 +107,17 @@ CREATE TABLE dev_collab.projects_tech_stacks (
         UNIQUE (project_id, tech_stack_id)
 );
 
-CREATE TABLE dev_collab.members (
+CREATE TABLE dev_collab.project_members (
     id BIGSERIAL PRIMARY KEY,
     project_id BIGINT NOT NULL,
     member_id BIGINT NOT NULL,
     role dev_collab.member_role NOT NULL,
 
-    CONSTRAINT members_projects_fk
+    CONSTRAINT project_members_projects_fk
         FOREIGN KEY (project_id) REFERENCES dev_collab.projects(id)
         ON DELETE CASCADE,
 
-    CONSTRAINT members_users_fk
+    CONSTRAINT project_members_users_fk
         FOREIGN KEY (member_id) REFERENCES dev_collab.users(id)
         ON DELETE CASCADE,
 
@@ -131,19 +143,24 @@ CREATE TABLE dev_collab.tasks (
         ON DELETE CASCADE
 );
 
-CREATE TABLE dev_collab.users_tasks (
+CREATE TABLE dev_collab.user_tasks (
     id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL,
+    assigned_by BIGINT NOT NULL,
+    assigned_to BIGINT NOT NULL,
     task_id BIGINT NOT NULL,
+    assigned_at TIMESTAMP NOT NULL DEFAULT LOCALTIMESTAMP,
 
-    CONSTRAINT users_tasks_users_fk
-        FOREIGN KEY (user_id) REFERENCES dev_collab.users(id),
+    CONSTRAINT assigned_by_users_tasks_users_fk
+        FOREIGN KEY (assigned_by) REFERENCES dev_collab.users(id),
+
+    CONSTRAINT assigned_to_users_tasks_users_fk
+        FOREIGN KEY (assigned_to) REFERENCES dev_collab.users(id),
 
     CONSTRAINT users_tasks_tasks_fk
         FOREIGN KEY (task_id) REFERENCES dev_collab.tasks(id),
 
     CONSTRAINT unique_user_task
-        UNIQUE (task_id, user_id)
+        UNIQUE (task_id, assigned_to)
 );
 
 CREATE TABLE dev_collab.files (
@@ -153,7 +170,7 @@ CREATE TABLE dev_collab.files (
     project_id BIGINT NOT NULL,
     task_id BIGINT,
     uploaded_by BIGINT NOT NULL,
-    size INT NOT NULL,
+    size BIGINT NOT NULL,
     uploaded_at TIMESTAMP NOT NULL,
 
     CONSTRAINT files_projects_fk
@@ -168,18 +185,18 @@ CREATE TABLE dev_collab.files (
         FOREIGN KEY (uploaded_by) REFERENCES dev_collab.users(id)
 );
 
-CREATE TABLE dev_collab.chats (
+CREATE TABLE dev_collab.messages (
     id UUID PRIMARY KEY,
     project_id BIGINT NOT NULL,
     sender_id BIGINT NOT NULL,
     message TEXT NOT NULL,
     sent_at TIMESTAMP NOT NULL,
 
-    CONSTRAINT chats_projects_fk
+    CONSTRAINT messages_projects_fk
         FOREIGN KEY (project_id) REFERENCES dev_collab.projects(id)
         ON DELETE CASCADE,
 
-    CONSTRAINT chats_users_fk
+    CONSTRAINT messages_users_fk
         FOREIGN KEY (sender_id) REFERENCES dev_collab.users(id)
 );
 
