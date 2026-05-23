@@ -16,7 +16,7 @@ public class EmailVerificationEmailService {
     private String websiteUrl;
 
     public void sendVerificationEmail(User user, String token) {
-        String verificationLink = websiteUrl + "/verify?token=" + token;
+        String verificationLink = websiteUrl + "/auth/verify?token=" + token;
 
         String subject = "DevCollab Email Verification";
 

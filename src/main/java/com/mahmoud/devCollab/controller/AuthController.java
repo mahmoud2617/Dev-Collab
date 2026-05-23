@@ -44,7 +44,7 @@ public class AuthController {
         @RequestParam String token
     ) {
         authService.verifyEmail(token);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/resend-email-verification")
@@ -52,7 +52,7 @@ public class AuthController {
         @Valid @RequestBody ResendEmailVerificationRequest request
     ) {
         authService.resendEmailVerification(request);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
     @PostMapping("/change-password")
@@ -68,7 +68,7 @@ public class AuthController {
         @Valid @RequestBody ForgetPasswordRequest request
     ) {
         authService.forgetPassword(request.getEmail());
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
     @PostMapping("/forget-password/verify-otp")

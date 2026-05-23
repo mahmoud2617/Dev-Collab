@@ -5,6 +5,7 @@ import com.mahmoud.devCollab.domain.entity.RefreshToken;
 import com.mahmoud.devCollab.domain.entity.User;
 import com.mahmoud.devCollab.domain.enums.Role;
 import com.mahmoud.devCollab.dto.*;
+import com.mahmoud.devCollab.event.UserRegisteredEvent;
 import com.mahmoud.devCollab.exception.EmailNotVerifiedException;
 import com.mahmoud.devCollab.exception.InvalidRequestDataException;
 import com.mahmoud.devCollab.exception.UnauthorizedUserException;
@@ -23,6 +24,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -49,6 +51,7 @@ public class AuthService {
     private final PasswordResetVerificationService passwordResetVerificationService;
     private final PasswordResetSessionVerificationService passwordResetSessionVerificationService;
     private final JwtConfig jwtConfig;
+    private final ApplicationEventPublisher eventPublisher;
 
     public User getCurrentUser() {
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -74,9 +77,7 @@ public class AuthService {
 
         userRepository.save(user);
 
-        String token = emailVerificationService.createToken(user);
-
-        emailVerificationEmailService.sendVerificationEmail(user,token);
+        eventPublisher.publishEvent(new UserRegisteredEvent(user));
     }
 
     @Transactional
@@ -214,11 +215,10 @@ public class AuthService {
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
 
-        userRepository.save(user);
-
         passwordResetSessionVerificationService.deleteTokens(user);
     }
 
+    @Transactional
     public void logout(HttpServletRequest request, HttpServletResponse response) {
         if (request.getCookies() != null) {
             Arrays.stream(request.getCookies())

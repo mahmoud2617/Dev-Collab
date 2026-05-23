@@ -34,6 +34,10 @@ spring:
           starttls:
             enable: true
 
+server:
+  servlet:
+    context-path: /api
+
 app:
   jwt:
     secret: ${JWT_SECRET}
@@ -45,4 +49,4 @@ app:
     otpVerificationTokenExpiration: 300                     #5m
     resetPasswordSessionVerificationTokenExpiration: 900    #15m
 
-  websiteUrl: http://localhost/api
+  websiteUrl: http://localhost:8080/api
