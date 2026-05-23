@@ -1,11 +1,17 @@
 package com.mahmoud.devCollab.domain.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "files")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class File {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,7 +24,7 @@ public class File {
     private String url;
 
     @Column(name = "size")
-    private Integer size;
+    private Long size;
 
     @Column(name = "uploaded_at")
     private LocalDateTime uploadedAt;

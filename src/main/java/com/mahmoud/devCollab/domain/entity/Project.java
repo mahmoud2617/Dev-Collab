@@ -1,8 +1,9 @@
 package com.mahmoud.devCollab.domain.entity;
 
-import com.mahmoud.devCollab.domain.relation.Member;
+import com.mahmoud.devCollab.domain.relation.ProjectMember;
 import com.mahmoud.devCollab.domain.relation.ProjectTechStack;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,6 +13,11 @@ import java.util.Set;
 
 @Entity
 @Table(name = "projects")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,10 +49,10 @@ public class Project {
     private Set<File> files = new HashSet<>();
 
     @OneToMany(mappedBy = "project")
-    private Set<Member> members = new HashSet<>();
+    private Set<ProjectMember> projectMembers = new HashSet<>();
 
     @OneToMany(mappedBy = "project")
-    private List<Chat> chatMessages = new ArrayList<>();
+    private List<Message> messages = new ArrayList<>();
 
     @OneToMany(mappedBy = "project")
     private List<ActivityLog> activityLog = new ArrayList<>();

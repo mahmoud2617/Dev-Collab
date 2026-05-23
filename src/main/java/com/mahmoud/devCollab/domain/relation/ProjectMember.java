@@ -4,10 +4,16 @@ import com.mahmoud.devCollab.domain.entity.Project;
 import com.mahmoud.devCollab.domain.entity.User;
 import com.mahmoud.devCollab.domain.enums.MemberRole;
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
-@Table(name = "members")
-public class Member {
+@Table(name = "project_members")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class ProjectMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

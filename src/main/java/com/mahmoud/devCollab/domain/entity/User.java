@@ -1,7 +1,7 @@
 package com.mahmoud.devCollab.domain.entity;
 
 import com.mahmoud.devCollab.domain.enums.Role;
-import com.mahmoud.devCollab.domain.relation.Member;
+import com.mahmoud.devCollab.domain.relation.ProjectMember;
 import com.mahmoud.devCollab.domain.relation.UserSkill;
 import com.mahmoud.devCollab.domain.relation.UserTask;
 import jakarta.persistence.*;
@@ -41,8 +41,8 @@ public class User {
     @Column(name = "enabled")
     private Boolean enabled;
 
-    @Column(name = "bio")
-    private String bio;
+    @OneToOne(mappedBy = "user")
+    private Profile profile;
 
     @OneToMany(mappedBy = "user")
     private Set<VerificationToken> verificationTokens = new HashSet<>();
@@ -54,8 +54,8 @@ public class User {
     private Set<UserSkill> skills = new HashSet<>();
 
     @OneToMany(mappedBy = "member")
-    private Set<Member> memberships = new HashSet<>();
+    private Set<ProjectMember> memberships = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "assignedTo")
     private Set<UserTask> tasks = new HashSet<>();
 }
