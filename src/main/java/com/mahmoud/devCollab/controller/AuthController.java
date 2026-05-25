@@ -55,14 +55,6 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
-    @PostMapping("/change-password")
-    public ResponseEntity<Void> changePassword(
-        @Valid @RequestBody ChangePasswordRequest request
-    ) {
-        authService.changePassword(request);
-        return ResponseEntity.noContent().build();
-    }
-
     @PostMapping("/forget-password")
     public ResponseEntity<Void> forgetPassword(
         @Valid @RequestBody ForgetPasswordRequest request

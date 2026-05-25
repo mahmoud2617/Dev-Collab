@@ -1,6 +1,7 @@
 package com.mahmoud.devCollab.service.auth;
 
 import com.mahmoud.devCollab.config.JwtConfig;
+import com.mahmoud.devCollab.domain.entity.Profile;
 import com.mahmoud.devCollab.domain.entity.RefreshToken;
 import com.mahmoud.devCollab.domain.entity.User;
 import com.mahmoud.devCollab.domain.enums.Role;
@@ -9,6 +10,7 @@ import com.mahmoud.devCollab.event.UserRegisteredEvent;
 import com.mahmoud.devCollab.exception.EmailNotVerifiedException;
 import com.mahmoud.devCollab.exception.InvalidRequestDataException;
 import com.mahmoud.devCollab.exception.UnauthorizedUserException;
+import com.mahmoud.devCollab.repository.ProfileRepository;
 import com.mahmoud.devCollab.repository.RefreshTokenRepository;
 import com.mahmoud.devCollab.repository.UserRepository;
 import com.mahmoud.devCollab.security.CustomUserDetails;
@@ -28,7 +30,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +43,7 @@ import java.util.Objects;
 public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
+    private final ProfileRepository profileRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -53,19 +55,17 @@ public class AuthService {
     private final JwtConfig jwtConfig;
     private final ApplicationEventPublisher eventPublisher;
 
-    public User getCurrentUser() {
-        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (!(principal instanceof CustomUserDetails customUserDetails)) {
-            throw new UnauthorizedUserException();
-        }
-
-        return userRepository.findById(customUserDetails.getId()).orElseThrow(UnauthorizedUserException::new);
-    }
-
     @Transactional
     public void register(RegisterDto registerDto) {
         String encodedPassword = passwordEncoder.encode(registerDto.getPassword());
+
+        if (userRepository.existsByUsername(registerDto.getUsername())) {
+            throw new InvalidRequestDataException("Username is already taken.");
+        }
+
+        if (userRepository.existsByEmail(registerDto.getEmail())) {
+            throw new InvalidRequestDataException("Email is already in use.");
+        }
 
         User user = User.builder()
                 .username(registerDto.getUsername())
@@ -75,7 +75,16 @@ public class AuthService {
                 .enabled(false)
                 .build();
 
+        Profile profile = Profile.builder()
+                .user(user)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+
+        user.setProfile(profile);
+
         userRepository.save(user);
+        profileRepository.save(profile);
 
         eventPublisher.publishEvent(new UserRegisteredEvent(user));
     }
@@ -166,18 +175,6 @@ public class AuthService {
     }
 
     @Transactional
-    public void changePassword(ChangePasswordRequest request) {
-        User user = userRepository.findById(getCurrentUser().getId())
-                .orElseThrow(UnauthorizedUserException::new);
-
-        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
-            throw new InvalidRequestDataException("Current password is incorrect.");
-        }
-
-        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-    }
-
-    @Transactional
     public void forgetPassword(String email) {
         User user = userRepository.findByEmail(email)
                 .orElse(null);
@@ -224,9 +221,9 @@ public class AuthService {
             Arrays.stream(request.getCookies())
                     .filter(cookie -> "refreshToken".equals(cookie.getName()))
                     .findFirst()
-                    .ifPresent(cookie -> {
-                        refreshTokenRepository.deleteByToken(cookie.getValue());
-                    });
+                    .ifPresent(cookie ->
+                        refreshTokenRepository.deleteByToken(cookie.getValue())
+                    );
         }
 
         Cookie cookie = new Cookie("refreshToken", "");
