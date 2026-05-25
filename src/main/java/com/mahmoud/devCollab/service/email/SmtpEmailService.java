@@ -2,12 +2,14 @@ package com.mahmoud.devCollab.service.email;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
+@Primary
 public class SmtpEmailService implements EmailService {
     @Value("${spring.mail.username}")
     private String appEmail;
@@ -16,7 +18,7 @@ public class SmtpEmailService implements EmailService {
     private JavaMailSender mailSender;
 
     @Async
-    public void SendEmail(String to, String subject, String body) {
+    public void sendEmail(String to, String subject, String body) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setFrom(appEmail);
         mailMessage.setTo(to);

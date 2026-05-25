@@ -33,13 +33,13 @@ public class EmailVerificationEmailService {
         If you did not create an account, you can safely ignore this email.
 
         Best regards,
-        The DevCollab Team
+        DevCollab Team
         """.formatted(
             user.getUsername(),
             verificationLink,
             verificationConfig.getEmailVerificationTokenExpiration() / 60
         );
 
-        emailService.SendEmail(user.getEmail(), subject, body);
+        emailService.sendEmail(user.getEmail(), subject, body);
     }
 }

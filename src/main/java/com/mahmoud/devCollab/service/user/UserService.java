@@ -42,15 +42,22 @@ public class UserService {
 
     public Page<UserDto> getAllUsers(Pageable pageable) {
         int pageSize = Math.min(pageable.getPageSize(), 100);
-        String sortProperty = pageable.getSort().toString();
+
+        Sort.Order order = pageable.getSort()
+                .stream()
+                .findFirst()
+                .orElse(Sort.Order.by("id"));
+
+        String sortProperty = order.getProperty();
+        Sort.Direction direction = order.getDirection();
 
         List<String> allowedSortProperties = List.of("id", "username", "email");
 
-        if (allowedSortProperties.contains(pageable.getSort().toString())) {
+        if (!allowedSortProperties.contains(sortProperty)) {
             sortProperty = "id";
         }
 
-        pageable = PageRequest.of(pageable.getPageNumber(), pageSize, Sort.by(sortProperty).ascending());
+        pageable = PageRequest.of(pageable.getPageNumber(), pageSize, Sort.by(direction, sortProperty));
 
         Page<User> users = userRepository.findAll(pageable);
 

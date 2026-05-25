@@ -10,7 +10,6 @@ import com.mahmoud.devCollab.event.UserRegisteredEvent;
 import com.mahmoud.devCollab.exception.EmailNotVerifiedException;
 import com.mahmoud.devCollab.exception.InvalidRequestDataException;
 import com.mahmoud.devCollab.exception.UnauthorizedUserException;
-import com.mahmoud.devCollab.repository.ProfileRepository;
 import com.mahmoud.devCollab.repository.RefreshTokenRepository;
 import com.mahmoud.devCollab.repository.UserRepository;
 import com.mahmoud.devCollab.security.CustomUserDetails;
@@ -43,7 +42,6 @@ import java.util.Objects;
 public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
-    private final ProfileRepository profileRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -84,7 +82,6 @@ public class AuthService {
         user.setProfile(profile);
 
         userRepository.save(user);
-        profileRepository.save(profile);
 
         eventPublisher.publishEvent(new UserRegisteredEvent(user));
     }

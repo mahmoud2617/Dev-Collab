@@ -41,7 +41,7 @@ public class User {
     @Column(name = "enabled")
     private Boolean enabled;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.PERSIST)
     private Profile profile;
 
     @OneToMany(mappedBy = "user")

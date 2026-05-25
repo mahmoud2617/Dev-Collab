@@ -26,13 +26,13 @@ public class PasswordResetVerificationEmailService {
         If you did not initiate this request, someone may have typed your email address by mistake. You can safely ignore this message—your account remains secure.
 
         Regards,
-        The DevCollab Team
+        DevCollab Team
         """.formatted(
             user.getUsername(),
             code,
             verificationConfig.getOtpVerificationTokenExpiration() / 60
         );
 
-        emailService.SendEmail(user.getEmail(), subject, body);
+        emailService.sendEmail(user.getEmail(), subject, body);
     }
 }
