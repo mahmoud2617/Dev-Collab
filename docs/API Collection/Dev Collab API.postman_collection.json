@@ -32,7 +32,8 @@
                 "auth",
                 "register"
               ]
-            }
+            },
+            "description": "**Description:** Create a new user with username, email, and password.\n\n---\n\n**Method:** POST\n\n**URL:** {{baseUrl}}/auth/register\n\n---\n\n## **Example Request:**\n\n``` json\n{\n    \"username\": \"username1\",\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\"\n}\n\n ```\n\n---\n\n## **Example Response:**\n\n**Status:** 201 Created\n\n**Body:** (empty)\n\n---\n\n_**Verification link sent to user's email.**_"
           },
           "response": []
         },
@@ -74,7 +75,8 @@
                 "auth",
                 "login"
               ]
-            }
+            },
+            "description": "**Description:** Authenticates user credentials and returns JWT tokens.\n\n---\n\n**Method:** POST\n\n**URL:** {{baseUrl}}/auth/login\n\n---\n\n## **Example Request:**\n\n``` json\n{\n    \"usernameOrEmail\": \"username1\",\n    \"password\": \"password123\"\n}\n\n ```\n\n---\n\n## **Example Response:**\n\n**Status:** 200 OK\n\n**Body:**\n\n``` json\n{\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n}\n\n ```\n\n_And_ _**refreshToken**_ _in the Cookies_"
           },
           "response": []
         },
@@ -110,7 +112,8 @@
                 "auth",
                 "refresh"
               ]
-            }
+            },
+            "description": "**Description:** Generates a new access token using the refresh token.\n\n---\n\n**Method:** POST\n\n**URL:** {{baseUrl}}/auth/refresh\n\n---\n\n## **Example Request:**\n\n**Required Cookies:** refreshToken\n\n---\n\n## **Example Response:**\n\n**Status:** 200 OK\n\n**Body:**\n\n``` json\n{\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n}\n\n ```"
           },
           "response": []
         },
@@ -137,7 +140,8 @@
                   "value": "6BdImJ_HYJmpBqxwRk4jwhwTtZ1RwugmVNd4i6m54lk"
                 }
               ]
-            }
+            },
+            "description": "**Description:** Verifies user's email address using a verification token.\n\n---\n\n**Method:** GET\n\n**URL:** {{baseUrl}}/auth/verify-email?token=verification_token_here\n\n---\n\n## **Example Response:**\n\n**Status:** 204 No Content\n\n**Body:** (empty)"
           },
           "response": []
         },
@@ -167,7 +171,8 @@
                 "auth",
                 "resend-email-verification"
               ]
-            }
+            },
+            "description": "**Description:** Resends email verification link to the user.\n\n---\n\n**Method:** POST\n\n**URL:** {{baseUrl}}/auth/resend-email-verification\n\n---\n\n## **Example Request:**\n\n``` json\n{\n    \"email\": \"user@example.com\"\n}\n\n ```\n\n---\n\n## **Example Response:**\n\n**Status:** 202 Accepted\n\n**Body:** (empty)\n\n---\n\n_**Verification link sent to user's email.**_"
           },
           "response": []
         },
@@ -197,7 +202,8 @@
                 "auth",
                 "forget-password"
               ]
-            }
+            },
+            "description": "**Description:** Initiates password reset process by sending OTP to email.\n\n---\n\n**Method:** POST\n\n**URL:** {{baseUrl}}/auth/forget-password\n\n---\n\n## **Example Request:**\n\n``` json\n{\n    \"email\": \"user@example.com\"\n}\n\n ```\n\n---\n\n## **Example Response:**\n\n**Status:** 202 Accepted\n\n**Body:** (empty)\n\n---\n\n_**OTP sent to user's email.**_"
           },
           "response": []
         },
@@ -228,7 +234,8 @@
                 "forget-password",
                 "verify-otp"
               ]
-            }
+            },
+            "description": "**Description:** Verifies the OTP sent to user's email for password reset.\n\n---\n\n**Method:** POST\n\n**URL:** {{baseUrl}}/auth/forget-password/verify-otp\n\n---\n\n## **Example Request:**\n\n``` json\n{\n    \"email\": \"user@example.com\",\n    \"code\": \"328450\"\n}\n\n ```\n\n---\n\n## **Example Response:**\n\n**Status:** 200 OK\n\n**Body:**\n\n``` json\n{\n    \"resetToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n}\n\n ```"
           },
           "response": []
         },
@@ -259,7 +266,8 @@
                 "forget-password",
                 "reset-password"
               ]
-            }
+            },
+            "description": "**Description:** Resets the password using the reset session token.\n\n---\n\n**Method:** POST\n\n**URL:** {{baseUrl}}/auth/forget-password/reset-password\n\n---\n\n## **Example Request:**\n\n``` json\n{\n    \"email\": \"user@example.com\",\n    \"resetToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n    \"newPassword\": \"password123\"\n}\n\n ```\n\n---\n\n## **Example Response:**\n\n**Status:** 204 No Content\n\n**Body:** (empty)"
           },
           "response": []
         },
@@ -295,7 +303,8 @@
                 "auth",
                 "logout"
               ]
-            }
+            },
+            "description": "**Description:** Invalidates the current JWT token and terminates the user session.\n\n---\n\n**Method:** POST\n\n**URL:** {{baseUrl}}/auth/logout\n\n---\n\n## **Example Request:**\n\n**Required Headers:** Authorization (Bearer {{accessToken}})\n\n---\n\n## **Example Response:**\n\n**Status:** 204 No Content\n\n**Body:** (empty)"
           },
           "response": []
         }
@@ -323,7 +332,8 @@
               "path": [
                 "users"
               ]
-            }
+            },
+            "description": "**Description:** Retrieves a paginated list of users with optional sorting.\n\n---\n\n**Method:** GET\n\n**URL:** {{baseUrl}}/users\n\n---\n\n## **Example Request:**\n\n**Required Headers:** Authorization (Bearer {{accessToken}})\n\n---\n\n## **Example Response:**\n\n**Status:** 200 OK\n\n**Body:**\n\n``` json\n{\n    \"content\": [\n        {\n            \"id\": 1,\n            \"username\": \"mahmoud2617\",\n            \"email\": \"mm2617d@gmail.com\",\n            \"role\": \"ADMIN\"\n        },\n        {\n            \"id\": 2,\n            \"username\": \"username1\",\n            \"email\": \"user@gmail.com\",\n            \"role\": \"USER\"\n        }\n    ],\n    \"empty\": false,\n    \"first\": true,\n    \"last\": true,\n    \"number\": 0,\n    \"numberOfElements\": 2,\n    \"pageable\": {\n        \"offset\": 0,\n        \"pageNumber\": 0,\n        \"pageSize\": 20,\n        \"paged\": true,\n        \"sort\": {\n            \"empty\": false,\n            \"sorted\": true,\n            \"unsorted\": false\n        },\n        \"unpaged\": false\n    },\n    \"size\": 20,\n    \"sort\": {\n        \"empty\": false,\n        \"sorted\": true,\n        \"unsorted\": false\n    },\n    \"totalElements\": 2,\n    \"totalPages\": 1\n}\n\n ```\n\n---\n\n_**Available for Admins only**_"
           },
           "response": []
         },
@@ -347,7 +357,8 @@
                 "users",
                 "me"
               ]
-            }
+            },
+            "description": "**Description:** Retrieves the authenticated user's data.\n\n---\n\n**Method:** GET\n\n**URL:** {{baseUrl}}/users/me\n\n---\n\n## **Example Request:**\n\n**Required Headers:** Authorization (Bearer {{accessToken}})\n\n---\n\n## **Example Response:**\n\n**Status:** 200 OK\n\n**Body:**\n\n``` json\n{\n    \"id\": 1,\n    \"username\": \"mahmoud2617\",\n    \"email\": \"mm2617d@gmail.com\",\n    \"role\": \"ADMIN\"\n}\n\n ```"
           },
           "response": []
         },
@@ -380,7 +391,8 @@
                 "users",
                 "change-username"
               ]
-            }
+            },
+            "description": "**Description:** Changes the username for the currently authenticated user.\n\n---\n\n**Method:** PATCH\n\n**URL:** {{baseUrl}}/users/change-username\n\n---\n\n## **Example Request:**\n\n``` json\n{\n    \"newUsername\": \"username1new\"\n}\n\n ```\n\n**Required Headers:** Authorization (Bearer {{accessToken}})\n\n---\n\n## **Example Response:**\n\n**Status:** 204 No Content\n\n**Body:** (empty)"
           },
           "response": []
         },
@@ -416,7 +428,8 @@
                 "users",
                 "change-password"
               ]
-            }
+            },
+            "description": "**Description:** Changes the password for the currently authenticated user.\n\n---\n\n**Method:** PATCH\n\n**URL:** {{baseUrl}}/users/change-password\n\n---\n\n## **Example Request:**\n\n``` json\n{\n    \"currentPassword\": \"password123\",\n    \"newPassword\": \"password123new\"\n}\n\n ```\n\n**Required Headers:** Authorization (Bearer {{accessToken}})\n\n---\n\n## **Example Response:**\n\n**Status:** 204 No Content\n\n**Body:** (empty)"
           },
           "response": []
         },
@@ -440,7 +453,8 @@
                 "users",
                 "6"
               ]
-            }
+            },
+            "description": "**Description:** Deletes a user account (accessible by the user themselves or an admin).\n\n---\n\n**Method:** DELETE\n\n**URL:** {{baseUrl}}/users/:userId\n\n---\n\n## **Example Request:**\n\n**Required Headers:** Authorization (Bearer {{accessToken}})\n\n---\n\n## **Example Response:**\n\n**Status:** 204 No Content\n\n**Body:** (empty)"
           },
           "response": []
         }
