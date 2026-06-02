@@ -1,0 +1,129 @@
+# Running the Project Without Docker
+
+This project can be run either with Docker Compose or directly on your local machine.
+
+## Prerequisites
+
+Before running the project locally, make sure you have:
+
+* Java 21 installed
+* Maven 3.9+
+* PostgreSQL installed and running
+* A database created for the project
+
+Example:
+
+```sql
+CREATE DATABASE devcollab;
+```
+
+---
+
+## Environment Variables
+
+The application uses environment variables for database configuration and Flyway migrations.
+
+### Linux (Fedora, Ubuntu, etc.)
+
+Open your shell configuration file:
+
+```bash
+nano ~/.bashrc
+```
+
+Add the following variables at the end of the file:
+
+```bash
+export DB_URL="jdbc:postgresql://localhost:5432/devcollab"
+export DB_USER="your_username"
+export DB_PASSWORD="your_password"
+```
+
+If your password contains spaces, keep it inside quotes.
+
+Example:
+
+```bash
+export DB_PASSWORD="my postgres password"
+```
+
+Save the file and reload it:
+
+```bash
+source ~/.bashrc
+```
+
+Verify that the variables are available:
+
+```bash
+echo $DB_URL
+echo $DB_USER
+```
+
+---
+
+## Why Are Environment Variables Needed?
+
+The Flyway Maven Plugin is configured in `pom.xml` as:
+
+```xml
+<configuration>
+    <url>${env.DB_URL}</url>
+    <user>${env.DB_USER}</user>
+    <password>${env.DB_PASSWORD}</password>
+</configuration>
+```
+
+This means Maven reads the values from operating system environment variables.
+
+Without these variables, commands such as:
+
+```bash
+./mvnw flyway:migrate
+./mvnw flyway:clean
+```
+
+will fail because Flyway cannot connect to the database.
+
+---
+
+## Running Flyway
+
+Apply migrations:
+
+```bash
+./mvnw flyway:migrate
+```
+
+Clean the database (development only):
+
+```bash
+./mvnw flyway:clean
+```
+
+⚠️ Warning: `flyway:clean` removes all database objects and should never be used in production.
+
+---
+
+## Running the Application
+
+Start the Spring Boot application:
+
+```bash
+./mvnw spring-boot:run
+```
+
+Or:
+
+```bash
+./mvnw clean package
+java -jar target/devCollab-0.0.1-SNAPSHOT.jar
+```
+
+---
+
+## Why Docker Works Without ~/.bashrc
+
+When running with Docker Compose, environment variables are loaded from the `.env` file and passed into the containers automatically.
+
+When running directly on your machine, Maven and Spring Boot do not automatically read `.env` files. Therefore, the required variables must be available as operating system environment variables (for example through `~/.bashrc`).

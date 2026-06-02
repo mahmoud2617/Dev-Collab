@@ -1,0 +1,59 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: devcollab_backend:latest
+    container_name: devcollab_backend
+    env_file:
+      - .env
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+      - SPRING_DATASOURCE_USERNAME=${DB_USER}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    depends_on:
+      database:
+        condition: service_healthy
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - backend-net
+
+  database:
+    image: postgres:18-alpine
+    container_name: devcollab_db
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db_password
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - dev-collab_data:/var/lib/postgresql
+    secrets:
+      - db_password
+    restart: unless-stopped
+    networks:
+      - backend-net
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
+      interval: 10s
+      timeout: 25s
+      retries: 3
+
+secrets:
+  db_password:
+    environment: 'DB_PASSWORD'
+
+networks:
+  backend-net:
+    driver: bridge
+
+volumes:
+  dev-collab_data:
