@@ -35,4 +35,8 @@ public class ApiError {
     public static ApiError conflict(String message) {
         return new ApiError(409, message);
     }
+
+    public static ApiError internalServerError(String message) {
+        return new ApiError(500, message);
+    }
 }

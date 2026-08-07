@@ -133,6 +133,18 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
+            <version>2.9.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.cloudinary</groupId>
+            <artifactId>cloudinary-http5</artifactId>
+            <version>2.4.0</version>
+        </dependency>
 	</dependencies>
 
 	<build>
@@ -168,14 +180,14 @@
                 <artifactId>flyway-maven-plugin</artifactId>
 
                 <configuration>
-                    <url>${env.DB_URL}</url>
-                    <user>${env.DB_USER}</user>
-                    <password>${env.DB_PASSWORD}</password>
+                    <url>${flyway.url}</url>
+                    <user>${fly.user}</user>
+                    <password>${flyway.password}</password>
 
                     <cleanDisabled>false</cleanDisabled>
                 </configuration>
             </plugin>
-		</plugins>
+        </plugins>
 	</build>
 
 </project>

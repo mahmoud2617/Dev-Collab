@@ -8,6 +8,9 @@ import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -24,6 +27,15 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
             ApiError.forbidden(message)
+        );
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ApiError> handleMaxUploadSizeExceededException(
+        MaxUploadSizeExceededException exception
+    ) {
+        return ResponseEntity.badRequest().body(
+            ApiError.badRequest("File size exceeded. Maximum allowed size is " + exception.getMaxUploadSize())
         );
     }
 
@@ -54,6 +66,24 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(
             ApiError.conflict(message)
+        );
+    }
+
+    @ExceptionHandler(MissingServletRequestPartException.class)
+    public ResponseEntity<ApiError> handleMissingServletRequestPartException(
+        MissingServletRequestPartException exception
+    ) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+            ApiError.badRequest("Missing request part: " + exception.getRequestPartName())
+        );
+    }
+
+    @ExceptionHandler(MultipartException.class)
+    public ResponseEntity<ApiError> handleMultipartException(
+        MultipartException exception
+    ) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+            ApiError.badRequest(exception.getMessage())
         );
     }
 
@@ -103,6 +133,19 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleEmailNotVerifiedException() {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
             ApiError.forbidden("Email Not verified.")
+        );
+    }
+
+    @ExceptionHandler(InternalServerErrorException.class)
+    public ResponseEntity<ApiError> handleInternalServerErrorException(
+        InternalServerErrorException exception
+    ) {
+        String message = exception.getMessage() != null
+            ? exception.getMessage()
+            : "Internal server error.";
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+            ApiError.internalServerError(message)
         );
     }
 }

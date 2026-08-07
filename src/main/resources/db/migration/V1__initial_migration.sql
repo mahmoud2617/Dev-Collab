@@ -12,17 +12,25 @@ CREATE TABLE users (
     enabled BOOLEAN NOT NULL DEFAULT FALSE
 );
 
+CREATE TABLE profile_picture (
+    id BIGSERIAL PRIMARY KEY,
+    public_id TEXT NOT NULL UNIQUE,
+    url TEXT NOT NULL UNIQUE
+);
+
 CREATE TABLE profiles (
     id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL UNIQUE,
-    profile_picture_url TEXT,
+    profile_picture_id BIGINT,
     bio VARCHAR(500),
     created_at TIMESTAMP NOT NULL DEFAULT LOCALTIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT LOCALTIMESTAMP,
 
     CONSTRAINT profiles_users_fk
-        FOREIGN KEY (user_id) REFERENCES users (id)
-        ON DELETE CASCADE
+        FOREIGN KEY (id) REFERENCES users (id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT profile_picture_fk
+        FOREIGN KEY (profile_picture_id) REFERENCES profile_picture (id)
 );
 
 CREATE TABLE verification_tokens (

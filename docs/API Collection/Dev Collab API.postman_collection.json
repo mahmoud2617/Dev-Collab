@@ -1,494 +1,623 @@
 {
-  "info": {
-    "_postman_id": "2ef4c259-0ee9-4ada-87cb-59b4cf54bb0e",
-    "name": "Dev Collab API",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "47934852"
-  },
-  "item": [
-    {
-      "name": "Auth",
-      "item": [
-        {
-          "name": "Register",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"username\": \"mahmoud2617\",\n    \"email\": \"mm2617d@gmail.com\",\n    \"password\": \"password123\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/auth/register",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "register"
-              ]
-            },
-            "description": "**Description:** Create a new user with username, email, and password.\n\n---\n\n**Method:** POST\n\n**URL:** {{baseUrl}}/auth/register\n\n---\n\n## **Example Request:**\n\n``` json\n{\n    \"username\": \"username1\",\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\"\n}\n\n ```\n\n---\n\n## **Example Response:**\n\n**Status:** 201 Created\n\n**Body:** (empty)\n\n---\n\n_**Verification link sent to user's email.**_"
-          },
-          "response": []
-        },
-        {
-          "name": "Login",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var response = pm.response.json();",
-                  "pm.collectionVariables.set(\"accessToken\", response.token);",
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"usernameOrEmail\": \"mahmoud2617\",\n    \"password\": \"mahmoud 2617 admin\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/auth/login",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "login"
-              ]
-            },
-            "description": "**Description:** Authenticates user credentials and returns JWT tokens.\n\n---\n\n**Method:** POST\n\n**URL:** {{baseUrl}}/auth/login\n\n---\n\n## **Example Request:**\n\n``` json\n{\n    \"usernameOrEmail\": \"username1\",\n    \"password\": \"password123\"\n}\n\n ```\n\n---\n\n## **Example Response:**\n\n**Status:** 200 OK\n\n**Body:**\n\n``` json\n{\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n}\n\n ```\n\n_And_ _**refreshToken**_ _in the Cookies_"
-          },
-          "response": []
-        },
-        {
-          "name": "Refresh",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var response = pm.response.json();",
-                  "pm.collectionVariables.set(\"accessToken\", response.token);",
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/auth/refresh",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "refresh"
-              ]
-            },
-            "description": "**Description:** Generates a new access token using the refresh token.\n\n---\n\n**Method:** POST\n\n**URL:** {{baseUrl}}/auth/refresh\n\n---\n\n## **Example Request:**\n\n**Required Cookies:** refreshToken\n\n---\n\n## **Example Response:**\n\n**Status:** 200 OK\n\n**Body:**\n\n``` json\n{\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n}\n\n ```"
-          },
-          "response": []
-        },
-        {
-          "name": "Verify Email",
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/auth/verify-email?token=6BdImJ_HYJmpBqxwRk4jwhwTtZ1RwugmVNd4i6m54lk",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "verify-email"
-              ],
-              "query": [
-                {
-                  "key": "token",
-                  "value": "6BdImJ_HYJmpBqxwRk4jwhwTtZ1RwugmVNd4i6m54lk"
-                }
-              ]
-            },
-            "description": "**Description:** Verifies user's email address using a verification token.\n\n---\n\n**Method:** GET\n\n**URL:** {{baseUrl}}/auth/verify-email?token=verification_token_here\n\n---\n\n## **Example Response:**\n\n**Status:** 204 No Content\n\n**Body:** (empty)"
-          },
-          "response": []
-        },
-        {
-          "name": "Resend Email Verification",
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": \"mm2617d@gmail.com\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/auth/resend-email-verification",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "resend-email-verification"
-              ]
-            },
-            "description": "**Description:** Resends email verification link to the user.\n\n---\n\n**Method:** POST\n\n**URL:** {{baseUrl}}/auth/resend-email-verification\n\n---\n\n## **Example Request:**\n\n``` json\n{\n    \"email\": \"user@example.com\"\n}\n\n ```\n\n---\n\n## **Example Response:**\n\n**Status:** 202 Accepted\n\n**Body:** (empty)\n\n---\n\n_**Verification link sent to user's email.**_"
-          },
-          "response": []
-        },
-        {
-          "name": "Forget Password",
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": \"mm2617d@gmail.com\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/auth/forget-password",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "forget-password"
-              ]
-            },
-            "description": "**Description:** Initiates password reset process by sending OTP to email.\n\n---\n\n**Method:** POST\n\n**URL:** {{baseUrl}}/auth/forget-password\n\n---\n\n## **Example Request:**\n\n``` json\n{\n    \"email\": \"user@example.com\"\n}\n\n ```\n\n---\n\n## **Example Response:**\n\n**Status:** 202 Accepted\n\n**Body:** (empty)\n\n---\n\n_**OTP sent to user's email.**_"
-          },
-          "response": []
-        },
-        {
-          "name": "OTP Verification for Forgotten Password",
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": \"mm2617d@gmail.com\",\n    \"code\": \"921473\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/auth/forget-password/verify-otp",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "forget-password",
-                "verify-otp"
-              ]
-            },
-            "description": "**Description:** Verifies the OTP sent to user's email for password reset.\n\n---\n\n**Method:** POST\n\n**URL:** {{baseUrl}}/auth/forget-password/verify-otp\n\n---\n\n## **Example Request:**\n\n``` json\n{\n    \"email\": \"user@example.com\",\n    \"code\": \"328450\"\n}\n\n ```\n\n---\n\n## **Example Response:**\n\n**Status:** 200 OK\n\n**Body:**\n\n``` json\n{\n    \"resetToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n}\n\n ```"
-          },
-          "response": []
-        },
-        {
-          "name": "Reset Forgotten Password After OTP Verification",
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": \"mm2617d@gmail.com\",\n    \"resetToken\": \"8YuSVHW4b4xWujlsRBclW_ZqbfbxcBl_27l7qAnOtKg\",\n    \"newPassword\": \"password123\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/auth/forget-password/reset-password",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "forget-password",
-                "reset-password"
-              ]
-            },
-            "description": "**Description:** Resets the password using the reset session token.\n\n---\n\n**Method:** POST\n\n**URL:** {{baseUrl}}/auth/forget-password/reset-password\n\n---\n\n## **Example Request:**\n\n``` json\n{\n    \"email\": \"user@example.com\",\n    \"resetToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n    \"newPassword\": \"password123\"\n}\n\n ```\n\n---\n\n## **Example Response:**\n\n**Status:** 204 No Content\n\n**Body:** (empty)"
-          },
-          "response": []
-        },
-        {
-          "name": "Logout",
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/auth/logout",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "logout"
-              ]
-            },
-            "description": "**Description:** Invalidates the current JWT token and terminates the user session.\n\n---\n\n**Method:** POST\n\n**URL:** {{baseUrl}}/auth/logout\n\n---\n\n## **Example Request:**\n\n**Required Headers:** Authorization (Bearer {{accessToken}})\n\n---\n\n## **Example Response:**\n\n**Status:** 204 No Content\n\n**Body:** (empty)"
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "User",
-      "item": [
-        {
-          "name": "All Users",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/users",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "users"
-              ]
-            },
-            "description": "**Description:** Retrieves a paginated list of users with optional sorting.\n\n---\n\n**Method:** GET\n\n**URL:** {{baseUrl}}/users\n\n---\n\n## **Example Request:**\n\n**Required Headers:** Authorization (Bearer {{accessToken}})\n\n---\n\n## **Example Response:**\n\n**Status:** 200 OK\n\n**Body:**\n\n``` json\n{\n    \"content\": [\n        {\n            \"id\": 1,\n            \"username\": \"mahmoud2617\",\n            \"email\": \"mm2617d@gmail.com\",\n            \"role\": \"ADMIN\"\n        },\n        {\n            \"id\": 2,\n            \"username\": \"username1\",\n            \"email\": \"user@gmail.com\",\n            \"role\": \"USER\"\n        }\n    ],\n    \"empty\": false,\n    \"first\": true,\n    \"last\": true,\n    \"number\": 0,\n    \"numberOfElements\": 2,\n    \"pageable\": {\n        \"offset\": 0,\n        \"pageNumber\": 0,\n        \"pageSize\": 20,\n        \"paged\": true,\n        \"sort\": {\n            \"empty\": false,\n            \"sorted\": true,\n            \"unsorted\": false\n        },\n        \"unpaged\": false\n    },\n    \"size\": 20,\n    \"sort\": {\n        \"empty\": false,\n        \"sorted\": true,\n        \"unsorted\": false\n    },\n    \"totalElements\": 2,\n    \"totalPages\": 1\n}\n\n ```\n\n---\n\n_**Available for Admins only**_"
-          },
-          "response": []
-        },
-        {
-          "name": "Me",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/users/me",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "users",
-                "me"
-              ]
-            },
-            "description": "**Description:** Retrieves the authenticated user's data.\n\n---\n\n**Method:** GET\n\n**URL:** {{baseUrl}}/users/me\n\n---\n\n## **Example Request:**\n\n**Required Headers:** Authorization (Bearer {{accessToken}})\n\n---\n\n## **Example Response:**\n\n**Status:** 200 OK\n\n**Body:**\n\n``` json\n{\n    \"id\": 1,\n    \"username\": \"mahmoud2617\",\n    \"email\": \"mm2617d@gmail.com\",\n    \"role\": \"ADMIN\"\n}\n\n ```"
-          },
-          "response": []
-        },
-        {
-          "name": "Change Username",
-          "request": {
-            "method": "PATCH",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"newUsername\": \"mahmoud2617\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/users/change-username",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "users",
-                "change-username"
-              ]
-            },
-            "description": "**Description:** Changes the username for the currently authenticated user.\n\n---\n\n**Method:** PATCH\n\n**URL:** {{baseUrl}}/users/change-username\n\n---\n\n## **Example Request:**\n\n``` json\n{\n    \"newUsername\": \"username1new\"\n}\n\n ```\n\n**Required Headers:** Authorization (Bearer {{accessToken}})\n\n---\n\n## **Example Response:**\n\n**Status:** 204 No Content\n\n**Body:** (empty)"
-          },
-          "response": []
-        },
-        {
-          "name": "Change Password",
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "PATCH",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"currentPassword\": \"password123\",\n    \"newPassword\": \"password123\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/users/change-password",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "users",
-                "change-password"
-              ]
-            },
-            "description": "**Description:** Changes the password for the currently authenticated user.\n\n---\n\n**Method:** PATCH\n\n**URL:** {{baseUrl}}/users/change-password\n\n---\n\n## **Example Request:**\n\n``` json\n{\n    \"currentPassword\": \"password123\",\n    \"newPassword\": \"password123new\"\n}\n\n ```\n\n**Required Headers:** Authorization (Bearer {{accessToken}})\n\n---\n\n## **Example Response:**\n\n**Status:** 204 No Content\n\n**Body:** (empty)"
-          },
-          "response": []
-        },
-        {
-          "name": "Delete User",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/users/6",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "users",
-                "6"
-              ]
-            },
-            "description": "**Description:** Deletes a user account (accessible by the user themselves or an admin).\n\n---\n\n**Method:** DELETE\n\n**URL:** {{baseUrl}}/users/:userId\n\n---\n\n## **Example Request:**\n\n**Required Headers:** Authorization (Bearer {{accessToken}})\n\n---\n\n## **Example Response:**\n\n**Status:** 204 No Content\n\n**Body:** (empty)"
-          },
-          "response": []
-        }
-      ]
-    }
-  ],
-  "event": [
-    {
-      "listen": "prerequest",
-      "script": {
-        "type": "text/javascript",
-        "packages": {},
-        "requests": {},
-        "exec": [
-          ""
-        ]
-      }
-    },
-    {
-      "listen": "test",
-      "script": {
-        "type": "text/javascript",
-        "packages": {},
-        "requests": {},
-        "exec": [
-          ""
-        ]
-      }
-    }
-  ],
-  "variable": [
-    {
-      "key": "accessToken",
-      "value": ""
-    }
-  ]
+	"info": {
+		"_postman_id": "2ef4c259-0ee9-4ada-87cb-59b4cf54bb0e",
+		"name": "Dev Collab API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47934852"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"mahmoud\",\n    \"email\": \"mm2617@gmail.com\",\n    \"password\": \"password123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						},
+						"description": "**Description:** Create a new user with username, email, and password.\n\n---\n\n**Method:** POST\n\n**URL:** {{baseUrl}}/auth/register\n\n---\n\n## **Example Request:**\n\n``` json\n{\n    \"username\": \"username1\",\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\"\n}\n\n ```\n\n---\n\n## **Example Response:**\n\n**Status:** 201 Created\n\n**Body:** (empty)\n\n---\n\n_**Verification link sent to user's email.**_"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = pm.response.json();",
+									"pm.collectionVariables.set(\"accessToken\", response.token);",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"usernameOrEmail\": \"mahmoud2617\",\n    \"password\": \"mahmoud 2617 admin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "**Description:** Authenticates user credentials and returns JWT tokens.\n\n---\n\n**Method:** POST\n\n**URL:** {{baseUrl}}/auth/login\n\n---\n\n## **Example Request:**\n\n``` json\n{\n    \"usernameOrEmail\": \"username1\",\n    \"password\": \"password123\"\n}\n\n ```\n\n---\n\n## **Example Response:**\n\n**Status:** 200 OK\n\n**Body:**\n\n``` json\n{\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n}\n\n ```\n\n_And_ _**refreshToken**_ _in the Cookies_"
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = pm.response.json();",
+									"pm.collectionVariables.set(\"accessToken\", response.token);",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/refresh",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"refresh"
+							]
+						},
+						"description": "**Description:** Generates a new access token using the refresh token.\n\n---\n\n**Method:** POST\n\n**URL:** {{baseUrl}}/auth/refresh\n\n---\n\n## **Example Request:**\n\n**Required Cookies:** refreshToken\n\n---\n\n## **Example Response:**\n\n**Status:** 200 OK\n\n**Body:**\n\n``` json\n{\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Email",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/verify-email?token=6BdImJ_HYJmpBqxwRk4jwhwTtZ1RwugmVNd4i6m54lk",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"verify-email"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "6BdImJ_HYJmpBqxwRk4jwhwTtZ1RwugmVNd4i6m54lk"
+								}
+							]
+						},
+						"description": "**Description:** Verifies user's email address using a verification token.\n\n---\n\n**Method:** GET\n\n**URL:** {{baseUrl}}/auth/verify-email?token=verification_token_here\n\n---\n\n## **Example Response:**\n\n**Status:** 204 No Content\n\n**Body:** (empty)"
+					},
+					"response": []
+				},
+				{
+					"name": "Resend Email Verification",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"mm2617d@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/resend-email-verification",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"resend-email-verification"
+							]
+						},
+						"description": "**Description:** Resends email verification link to the user.\n\n---\n\n**Method:** POST\n\n**URL:** {{baseUrl}}/auth/resend-email-verification\n\n---\n\n## **Example Request:**\n\n``` json\n{\n    \"email\": \"user@example.com\"\n}\n\n ```\n\n---\n\n## **Example Response:**\n\n**Status:** 202 Accepted\n\n**Body:** (empty)\n\n---\n\n_**Verification link sent to user's email.**_"
+					},
+					"response": []
+				},
+				{
+					"name": "Forget Password",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"mm2617d@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/forget-password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"forget-password"
+							]
+						},
+						"description": "**Description:** Initiates password reset process by sending OTP to email.\n\n---\n\n**Method:** POST\n\n**URL:** {{baseUrl}}/auth/forget-password\n\n---\n\n## **Example Request:**\n\n``` json\n{\n    \"email\": \"user@example.com\"\n}\n\n ```\n\n---\n\n## **Example Response:**\n\n**Status:** 202 Accepted\n\n**Body:** (empty)\n\n---\n\n_**OTP sent to user's email.**_"
+					},
+					"response": []
+				},
+				{
+					"name": "OTP Verification for Forgotten Password",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"mm2617d@gmail.com\",\n    \"code\": \"921473\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/forget-password/verify-otp",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"forget-password",
+								"verify-otp"
+							]
+						},
+						"description": "**Description:** Verifies the OTP sent to user's email for password reset.\n\n---\n\n**Method:** POST\n\n**URL:** {{baseUrl}}/auth/forget-password/verify-otp\n\n---\n\n## **Example Request:**\n\n``` json\n{\n    \"email\": \"user@example.com\",\n    \"code\": \"328450\"\n}\n\n ```\n\n---\n\n## **Example Response:**\n\n**Status:** 200 OK\n\n**Body:**\n\n``` json\n{\n    \"resetToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "Reset Forgotten Password After OTP Verification",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"mm2617d@gmail.com\",\n    \"resetToken\": \"8YuSVHW4b4xWujlsRBclW_ZqbfbxcBl_27l7qAnOtKg\",\n    \"newPassword\": \"password123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/forget-password/reset-password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"forget-password",
+								"reset-password"
+							]
+						},
+						"description": "**Description:** Resets the password using the reset session token.\n\n---\n\n**Method:** POST\n\n**URL:** {{baseUrl}}/auth/forget-password/reset-password\n\n---\n\n## **Example Request:**\n\n``` json\n{\n    \"email\": \"user@example.com\",\n    \"resetToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n    \"newPassword\": \"password123\"\n}\n\n ```\n\n---\n\n## **Example Response:**\n\n**Status:** 204 No Content\n\n**Body:** (empty)"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						},
+						"description": "**Description:** Invalidates the current JWT token and terminates the user session.\n\n---\n\n**Method:** POST\n\n**URL:** {{baseUrl}}/auth/logout\n\n---\n\n## **Example Request:**\n\n**Required Headers:** Authorization (Bearer {{accessToken}})\n\n---\n\n## **Example Response:**\n\n**Status:** 204 No Content\n\n**Body:** (empty)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "All Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						},
+						"description": "**Description:** Retrieves a paginated list of users with optional sorting.\n\n---\n\n**Method:** GET\n\n**URL:** {{baseUrl}}/users\n\n---\n\n## **Example Request:**\n\n**Required Headers:** Authorization (Bearer {{accessToken}})\n\n---\n\n## **Example Response:**\n\n**Status:** 200 OK\n\n**Body:**\n\n``` json\n{\n    \"content\": [\n        {\n            \"id\": 1,\n            \"username\": \"mahmoud2617\",\n            \"email\": \"mm2617d@gmail.com\",\n            \"role\": \"ADMIN\"\n        },\n        {\n            \"id\": 2,\n            \"username\": \"username1\",\n            \"email\": \"user@gmail.com\",\n            \"role\": \"USER\"\n        }\n    ],\n    \"empty\": false,\n    \"first\": true,\n    \"last\": true,\n    \"number\": 0,\n    \"numberOfElements\": 2,\n    \"pageable\": {\n        \"offset\": 0,\n        \"pageNumber\": 0,\n        \"pageSize\": 20,\n        \"paged\": true,\n        \"sort\": {\n            \"empty\": false,\n            \"sorted\": true,\n            \"unsorted\": false\n        },\n        \"unpaged\": false\n    },\n    \"size\": 20,\n    \"sort\": {\n        \"empty\": false,\n        \"sorted\": true,\n        \"unsorted\": false\n    },\n    \"totalElements\": 2,\n    \"totalPages\": 1\n}\n\n ```\n\n---\n\n_**Available for Admins only**_"
+					},
+					"response": []
+				},
+				{
+					"name": "Me",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/users/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"me"
+							]
+						},
+						"description": "**Description:** Retrieves the authenticated user's data.\n\n---\n\n**Method:** GET\n\n**URL:** {{baseUrl}}/users/me\n\n---\n\n## **Example Request:**\n\n**Required Headers:** Authorization (Bearer {{accessToken}})\n\n---\n\n## **Example Response:**\n\n**Status:** 200 OK\n\n**Body:**\n\n``` json\n{\n    \"id\": 1,\n    \"username\": \"mahmoud2617\",\n    \"email\": \"mm2617d@gmail.com\",\n    \"role\": \"ADMIN\"\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "Change Username",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"newUsername\": \"mahmoud2617\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/me/username",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"me",
+								"username"
+							]
+						},
+						"description": "**Description:** Changes the username for the currently authenticated user.\n\n---\n\n**Method:** PATCH\n\n**URL:** {{baseUrl}}/users/me/username\n\n---\n\n## **Example Request:**\n\n``` json\n{\n    \"newUsername\": \"username1new\"\n}\n\n ```\n\n**Required Headers:** Authorization (Bearer {{accessToken}})\n\n---\n\n## **Example Response:**\n\n**Status:** 204 No Content\n\n**Body:** (empty)"
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"currentPassword\": \"password123\",\n    \"newPassword\": \"password123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/me/password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"me",
+								"password"
+							]
+						},
+						"description": "**Description:** Changes the password for the currently authenticated user.\n\n---\n\n**Method:** PATCH\n\n**URL:** {{baseUrl}}/users/me/password\n\n---\n\n## **Example Request:**\n\n``` json\n{\n    \"currentPassword\": \"password123\",\n    \"newPassword\": \"password123new\"\n}\n\n ```\n\n**Required Headers:** Authorization (Bearer {{accessToken}})\n\n---\n\n## **Example Response:**\n\n**Status:** 204 No Content\n\n**Body:** (empty)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/users/6",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"6"
+							]
+						},
+						"description": "**Description:** Deletes a user account (accessible by the user themselves or an admin).\n\n---\n\n**Method:** DELETE\n\n**URL:** {{baseUrl}}/users/:userId\n\n---\n\n## **Example Request:**\n\n**Required Headers:** Authorization (Bearer {{accessToken}})\n\n---\n\n## **Example Response:**\n\n**Status:** 204 No Content\n\n**Body:** (empty)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Profile",
+			"item": [
+				{
+					"name": "My Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/profiles/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"profiles",
+								"me"
+							]
+						},
+						"description": "**Description:** Retrieves the authenticated user's profile information.\n\n---\n\n**Method:** GET\n\n**URL:** {{baseUrl}}/profiles/me\n\n---\n\n## **Example Request:**\n\nRequired Headers: Authorization (Bearer {{accessToken}})\n\n---\n\n## **Example Response:**\n\n**Status:** 200 OK\n\n**Body:**\n\n``` json\n{\n    \"user\": {\n        \"id\": 1,\n        \"username\": \"mahmoud2617\",\n        \"email\": \"mm2617d@gmail.com\",\n        \"role\": \"ADMIN\"\n    },\n    \"bio\": \"Backend Developer!\",\n    \"profilePicture\": {\n        \"id\": 2,\n        \"url\": \"https://res.cloudinary.com/m3op5s8k/image/upload/v1786108257/t98p22biixmeyqfhqotg.jpg\"\n    },\n    \"skills\": null,\n    \"createdAt\": \"2026-08-07T13:07:48.107644\",\n    \"updatedAt\": \"2026-08-07T13:10:58.117718\"\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "Change Profile Picture",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "picture",
+									"type": "file",
+									"src": "/home/mahmoud2617/Pictures/wp9389134-4k-pc-space-wallpapers.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/profiles/me/profile-picture",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"profiles",
+								"me",
+								"profile-picture"
+							]
+						},
+						"description": "**Description:** Uploads or replaces the authenticated user's profile picture.\n\n---\n\n**Method:** PATCH\n\n**URL:** {{baseUrl}}/profiles/me/profile-picture\n\n---\n\n## **Example Request:**\n\n**Body Type:** `form-data`\n\n| Key | Type | Value |\n| --- | --- | --- |\n| `picture` | File | _Select an image file_ |\n\nRequired Headers: Authorization (Bearer {{accessToken}})\n\n---\n\n## **Example Response:**\n\n**Status:** 204 No Content\n\n**Body:** (empty)"
+					},
+					"response": []
+				},
+				{
+					"name": "Change Bio",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"bio\": null   \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/profiles/me/bio",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"profiles",
+								"me",
+								"bio"
+							]
+						},
+						"description": "**Description:** Creates, updates, or removes the authenticated user's bio.\n\n---\n\n**Method:** PATCH\n\n**URL:** {{baseUrl}}/profiles/me/bio\n\n---\n\n## **Example Request:**\n\n``` json\n{\n    \"bio\": \"Backend Developer!\"\n}\n\n ```\n\nRequired Headers: Authorization (Bearer {{accessToken}})\n\n---\n\n## **Example Response:**\n\n**Status:** 204 No Content\n\n**Body:** (empty)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Profile Picture",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/profiles/me/profile-picture",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"profiles",
+								"me",
+								"profile-picture"
+							]
+						},
+						"description": "**Description:** Permanently removes the authenticated user's profile picture.\n\n---\n\n**Method:** DELETE\n\n**URL:** {{baseUrl}}/profiles/me/profile-picture\n\n---\n\n## **Example Request:**\n\n**Required Headers:** Authorization (Bearer {{accessToken}})\n\n---\n\n## **Example Response:**\n\n**Status:** 204 No Content\n\n**Body:** (empty)"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "accessToken",
+			"value": ""
+		}
+	]
 }

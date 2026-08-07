@@ -16,14 +16,10 @@ import java.time.LocalDateTime;
 @Builder
 public class Profile {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "bio")
     private String bio;
-
-    @Column(name = "profile_picture_url")
-    private String profilePictureUrl;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -31,8 +27,15 @@ public class Profile {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @MapsId
     @OneToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
+
+    @OneToOne(orphanRemoval = true)
+    @JoinColumn(name = "profile_picture_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private ProfilePicture profilePicture;
+
 }

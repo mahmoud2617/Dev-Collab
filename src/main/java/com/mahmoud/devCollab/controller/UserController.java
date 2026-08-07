@@ -29,11 +29,11 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserDto> me() {
-        return ResponseEntity.ok(userService.me());
+    public UserDto getMe() {
+        return userService.getMe();
     }
 
-    @PatchMapping("/change-username")
+    @PatchMapping("/me/username")
     public ResponseEntity<Void> changeUsername(
         @Valid @RequestBody ChangeUsernameRequest request
     ) {
@@ -41,7 +41,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/change-password")
+    @PatchMapping("/me/password")
     public ResponseEntity<Void> changePassword(
         @Valid @RequestBody ChangePasswordRequest request
     ) {
