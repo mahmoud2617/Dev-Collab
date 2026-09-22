@@ -1,7 +1,7 @@
 package com.mahmoud.devCollab.security;
 
 import com.mahmoud.devCollab.domain.entity.User;
-import com.mahmoud.devCollab.exception.UserNotFoundException;
+import com.mahmoud.devCollab.exception.NotFoundException;
 import com.mahmoud.devCollab.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,7 +18,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByUsername(usernameOrEmail)
                 .orElseGet(() ->
                     userRepository.findByEmail(usernameOrEmail)
-                        .orElseThrow(UserNotFoundException::new)
+                        .orElseThrow(() -> new NotFoundException("User not found."))
                 );
 
         return new CustomUserDetails(user);

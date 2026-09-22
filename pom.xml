@@ -181,7 +181,7 @@
 
                 <configuration>
                     <url>${flyway.url}</url>
-                    <user>${fly.user}</user>
+                    <user>${flyway.user}</user>
                     <password>${flyway.password}</password>
 
                     <cleanDisabled>false</cleanDisabled>

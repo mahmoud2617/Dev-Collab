@@ -96,10 +96,14 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ApiError> handleUserNotFoundException() {
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ApiError> handleNotFoundException(
+        NotFoundException e
+    ) {
+        String message = e.getMessage() == null? "Not found." : e.getMessage();
+
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-            ApiError.notFound("User not found.")
+            ApiError.notFound(message)
         );
     }
 
@@ -132,7 +136,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EmailNotVerifiedException.class)
     public ResponseEntity<ApiError> handleEmailNotVerifiedException() {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
-            ApiError.forbidden("Email Not verified.")
+            ApiError.forbidden("Email not verified.")
         );
     }
 
