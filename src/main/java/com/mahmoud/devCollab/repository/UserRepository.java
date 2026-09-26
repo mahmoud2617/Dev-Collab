@@ -21,4 +21,20 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query("DELETE FROM User u WHERE u.id = :id")
     void deleteById(Long id);
+
+    @Query(value = """
+        SELECT u FROM User u
+        JOIN FETCH u.profile p
+        LEFT JOIN FETCH p.profilePicture pp
+        LEFT JOIN FETCH u.userSkills us
+        LEFT JOIN FETCH us.skill
+        WHERE u.id = :id""")
+    Optional<User> findByIdWithProfileAndSkills(Long id);
+
+    @Query(value = """
+        SELECT u FROM User u
+        LEFT JOIN FETCH u.userSkills us
+        LEFT JOIN FETCH us.skill
+        WHERE u.id = :id""")
+    Optional<User> findByIdWithSkills(Long id);
 }

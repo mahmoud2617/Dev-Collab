@@ -9,7 +9,9 @@ import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -50,8 +52,12 @@ public class User {
     @OneToMany(mappedBy = "user")
     private Set<RefreshToken> refreshTokens = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
-    private Set<UserSkill> skills = new HashSet<>();
+    @OneToMany(
+        mappedBy = "user",
+        cascade = CascadeType.PERSIST,
+        orphanRemoval = true
+    )
+    private List<UserSkill> userSkills = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
     private Set<ProjectMember> memberships = new HashSet<>();

@@ -34,11 +34,9 @@ public class ProfileService {
     private final Cloudinary cloudinary;
 
     public ProfileDto getMyProfile() {
-        User user = currentUserService.getCurrentUser();
+        User user = currentUserService.getCurrentUserWithProfileAndSkills();
 
-        Profile profile = profileRepository.findByUserIdWithSkills(user.getId());
-
-        return profileMapper.toDto(profile);
+        return profileMapper.toDto(user.getProfile());
     }
 
     @Transactional
@@ -68,7 +66,7 @@ public class ProfileService {
             throw new InvalidRequestDataException("The actual picture type not the same as the MIME type.");
         }
 
-        Profile profile = profileRepository.findByUserId(currentUserService.getCurrentUser().getId());
+        Profile profile = currentUserService.getCurrentUserWithProfileAndSkills().getProfile();
 
         try {
             if (profile.getProfilePicture() != null) {
@@ -111,7 +109,7 @@ public class ProfileService {
             }
         }
 
-        Profile profile = profileRepository.findByUserId(currentUserService.getCurrentUser().getId());
+        Profile profile = currentUserService.getCurrentUserWithProfileAndSkills().getProfile();
 
         profile.setBio(bio);
 
@@ -119,7 +117,7 @@ public class ProfileService {
     }
 
     public void deleteProfilePicture() {
-        Profile profile = profileRepository.findByUserId(currentUserService.getCurrentUser().getId());
+        Profile profile = currentUserService.getCurrentUserWithProfileAndSkills().getProfile();
 
         if (profile.getProfilePicture() == null) {
             return;

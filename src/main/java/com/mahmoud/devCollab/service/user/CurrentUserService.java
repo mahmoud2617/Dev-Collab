@@ -14,12 +14,24 @@ public class CurrentUserService {
     private final UserRepository userRepository;
 
     public User getCurrentUser() {
+        return userRepository.findById(currentUserId()).orElseThrow(UnauthorizedUserException::new);
+    }
+
+    public User getCurrentUserWithProfileAndSkills() {
+        return userRepository.findByIdWithProfileAndSkills(currentUserId()).orElseThrow(UnauthorizedUserException::new);
+    }
+
+    public User getCurrentUserWithSkills() {
+        return userRepository.findByIdWithSkills(currentUserId()).orElseThrow(UnauthorizedUserException::new);
+    }
+
+    private Long currentUserId() {
         var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (!(principal instanceof CustomUserDetails customUserDetails)) {
             throw new UnauthorizedUserException();
         }
 
-        return userRepository.findById(customUserDetails.getId()).orElseThrow(UnauthorizedUserException::new);
+        return customUserDetails.getId();
     }
 }

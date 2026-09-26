@@ -4,6 +4,7 @@ import com.mahmoud.devCollab.domain.entity.Skill;
 import com.mahmoud.devCollab.dto.CreateSkillRequest;
 import com.mahmoud.devCollab.dto.EditSkillRequest;
 import com.mahmoud.devCollab.dto.SkillDto;
+import com.mahmoud.devCollab.exception.ConflictException;
 import com.mahmoud.devCollab.exception.NotFoundException;
 import com.mahmoud.devCollab.mapper.SkillMapper;
 import com.mahmoud.devCollab.repository.SkillRepository;
@@ -43,8 +44,11 @@ public class SkillService {
     public SkillDto createSkill(CreateSkillRequest request) {
         String normalizedName = request.getName().trim().replaceAll("\\s+", " ");
 
-        Skill skill = skillRepository.findByName(normalizedName)
-            .orElseGet(() -> skillRepository.save(new Skill(normalizedName)));
+        if (skillRepository.findByName(normalizedName).isPresent()) {
+            throw new ConflictException("Skill already exists.");
+        }
+
+        Skill skill = skillRepository.save(new Skill(normalizedName));
 
         return skillMapper.toDto(skill);
     }

@@ -1,0 +1,1 @@
+CREATE INDEX idx_skill_name ON skills (name);

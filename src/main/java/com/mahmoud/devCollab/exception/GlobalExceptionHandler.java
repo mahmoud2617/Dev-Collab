@@ -107,6 +107,17 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ApiError> handleConflictException(
+        ConflictException e
+    ) {
+        String message = e.getMessage() == null? "Conflict." : e.getMessage();
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+            ApiError.conflict(message)
+        );
+    }
+
     @ExceptionHandler(UnauthorizedUserException.class)
     public ResponseEntity<ApiError> handleUnauthorizedUserException(
         UnauthorizedUserException exception

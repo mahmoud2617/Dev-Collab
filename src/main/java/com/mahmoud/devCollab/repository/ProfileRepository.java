@@ -9,7 +9,7 @@ public interface ProfileRepository extends CrudRepository<Profile, Long> {
     @Query(value = """
         SELECT p FROM Profile p
         JOIN FETCH p.user u
-        LEFT JOIN FETCH u.skills
+        LEFT JOIN FETCH u.userSkills
         WHERE u.id = :id""")
     Profile findByUserIdWithSkills(@Param("id") Long id);
 

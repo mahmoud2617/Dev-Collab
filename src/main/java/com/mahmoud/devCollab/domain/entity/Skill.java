@@ -4,8 +4,8 @@ import com.mahmoud.devCollab.domain.relation.UserSkill;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "skills")
@@ -26,5 +26,5 @@ public class Skill {
     private String name;
 
     @OneToMany(mappedBy = "skill")
-    private Set<UserSkill> users = new HashSet<>();
+    private List<UserSkill> userSkills = new ArrayList<>();
 }
