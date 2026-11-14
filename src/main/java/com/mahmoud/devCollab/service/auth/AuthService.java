@@ -10,6 +10,7 @@ import com.mahmoud.devCollab.event.UserRegisteredEvent;
 import com.mahmoud.devCollab.exception.EmailNotVerifiedException;
 import com.mahmoud.devCollab.exception.InvalidRequestDataException;
 import com.mahmoud.devCollab.exception.UnauthorizedUserException;
+import com.mahmoud.devCollab.mapper.UserMapper;
 import com.mahmoud.devCollab.repository.RefreshTokenRepository;
 import com.mahmoud.devCollab.repository.UserRepository;
 import com.mahmoud.devCollab.security.CustomUserDetails;
@@ -52,9 +53,10 @@ public class AuthService {
     private final PasswordResetSessionVerificationService passwordResetSessionVerificationService;
     private final JwtConfig jwtConfig;
     private final ApplicationEventPublisher eventPublisher;
+    private final UserMapper userMapper;
 
     @Transactional
-    public void register(RegisterDto registerDto) {
+    public UserDto register(RegisterDto registerDto) {
         String encodedPassword = passwordEncoder.encode(registerDto.getPassword());
 
         if (userRepository.existsByUsername(registerDto.getUsername())) {
@@ -84,6 +86,8 @@ public class AuthService {
         userRepository.save(user);
 
         eventPublisher.publishEvent(new UserRegisteredEvent(user));
+
+        return userMapper.toDto(user);
     }
 
     @Transactional

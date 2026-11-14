@@ -17,11 +17,10 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register(
+    public ResponseEntity<UserDto> register(
         @Valid @RequestBody RegisterDto registerDto
     ) {
-        authService.register(registerDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(registerDto));
     }
 
     @PostMapping("/login")
