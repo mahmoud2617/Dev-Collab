@@ -37,4 +37,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
         LEFT JOIN FETCH us.skill
         WHERE u.id = :id""")
     Optional<User> findByIdWithSkills(Long id);
+
+    @Query(value = """
+        SELECT DISTINCT u FROM User u
+        LEFT JOIN FETCH u.memberships pm
+        LEFT JOIN FETCH pm.project
+        WHERE u.id = :id""")
+    Optional<User> findByIdWithMemberships(Long id);
 }

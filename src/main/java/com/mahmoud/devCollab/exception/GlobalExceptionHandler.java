@@ -4,6 +4,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,9 +18,12 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(AuthorizationDeniedException.class)
-    public ResponseEntity<ApiError> handleAuthorizationDeniedException(
-        AuthorizationDeniedException exception
+    @ExceptionHandler({
+        AuthorizationDeniedException.class,
+        AccessDeniedException.class
+    })
+    public ResponseEntity<ApiError> handleAccessDeniedException(
+        RuntimeException exception
     ) {
         String message = exception.getMessage() != null
             ? exception.getMessage()
@@ -98,9 +102,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ApiError> handleNotFoundException(
-        NotFoundException e
+        NotFoundException exception
     ) {
-        String message = e.getMessage() == null? "Not found." : e.getMessage();
+        String message = exception.getMessage() == null? "Not found." : exception.getMessage();
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
             ApiError.notFound(message)
@@ -109,9 +113,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<ApiError> handleConflictException(
-        ConflictException e
+        ConflictException exception
     ) {
-        String message = e.getMessage() == null? "Conflict." : e.getMessage();
+        String message = exception.getMessage() == null? "Conflict." : exception.getMessage();
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(
             ApiError.conflict(message)

@@ -7,7 +7,6 @@ import com.mahmoud.devCollab.domain.entity.User;
 import com.mahmoud.devCollab.domain.enums.Role;
 import com.mahmoud.devCollab.dto.*;
 import com.mahmoud.devCollab.event.UserRegisteredEvent;
-import com.mahmoud.devCollab.exception.EmailNotVerifiedException;
 import com.mahmoud.devCollab.exception.InvalidRequestDataException;
 import com.mahmoud.devCollab.exception.UnauthorizedUserException;
 import com.mahmoud.devCollab.mapper.UserMapper;
@@ -101,9 +100,9 @@ public class AuthService {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-        if (!userDetails.getEnabled()) {
-            throw new EmailNotVerifiedException();
-        }
+//        if (!userDetails.getEnabled()) {
+//            throw new EmailNotVerifiedException();
+//        }
 
         Token token = new Token(
             userDetails.getId(),

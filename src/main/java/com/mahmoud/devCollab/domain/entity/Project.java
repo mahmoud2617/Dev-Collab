@@ -39,21 +39,39 @@ public class Project {
     @JoinColumn(name = "owner_id")
     private User owner;
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(
+        mappedBy = "project",
+        cascade = CascadeType.REMOVE
+    )
     private Set<ProjectTechStack> techStacks = new HashSet<>();
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(
+        mappedBy = "project",
+        cascade = CascadeType.REMOVE
+    )
     private Set<Task> tasks = new HashSet<>();
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(
+        mappedBy = "project",
+        cascade = CascadeType.REMOVE
+    )
     private Set<File> files = new HashSet<>();
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(
+        mappedBy = "project",
+        cascade = CascadeType.REMOVE
+    )
     private Set<ProjectMember> projectMembers = new HashSet<>();
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(
+        mappedBy = "project",
+        cascade = CascadeType.REMOVE
+    )
     private List<Message> messages = new ArrayList<>();
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(
+        mappedBy = "project",
+        cascade = CascadeType.REMOVE
+    )
     private List<ActivityLog> activityLog = new ArrayList<>();
 }

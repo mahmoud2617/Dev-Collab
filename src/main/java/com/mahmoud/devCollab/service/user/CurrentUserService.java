@@ -14,15 +14,23 @@ public class CurrentUserService {
     private final UserRepository userRepository;
 
     public User getCurrentUser() {
-        return userRepository.findById(currentUserId()).orElseThrow(UnauthorizedUserException::new);
+        return userRepository.findById(currentUserId())
+                .orElseThrow(UnauthorizedUserException::new);
     }
 
     public User getCurrentUserWithProfileAndSkills() {
-        return userRepository.findByIdWithProfileAndSkills(currentUserId()).orElseThrow(UnauthorizedUserException::new);
+        return userRepository.findByIdWithProfileAndSkills(currentUserId())
+                .orElseThrow(UnauthorizedUserException::new);
     }
 
     public User getCurrentUserWithSkills() {
-        return userRepository.findByIdWithSkills(currentUserId()).orElseThrow(UnauthorizedUserException::new);
+        return userRepository.findByIdWithSkills(currentUserId())
+                .orElseThrow(UnauthorizedUserException::new);
+    }
+
+    public User getCurrentUserWithMemberships() {
+        return userRepository.findByIdWithMemberships(currentUserId())
+                .orElseThrow(UnauthorizedUserException::new);
     }
 
     private Long currentUserId() {
