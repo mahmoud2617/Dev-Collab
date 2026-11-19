@@ -91,6 +91,24 @@ CREATE TABLE projects (
         ON DELETE CASCADE
 );
 
+CREATE TABLE projects_join_requests (
+    id BIGSERIAL PRIMARY KEY,
+    project_id BIGINT NOT NULL,
+    user_id BIGINT NOT NULL,
+    sent_at TIMESTAMP NOT NULL,
+
+    CONSTRAINT projects_join_requests_projects_fk
+        FOREIGN KEY (project_id) REFERENCES projects (id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT projects_join_requests_users_fk
+        FOREIGN KEY (user_id) REFERENCES projects (id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT unique_projects_join_requests
+        UNIQUE (project_id, user_id)
+);
+
 CREATE TABLE tech_stacks (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL UNIQUE

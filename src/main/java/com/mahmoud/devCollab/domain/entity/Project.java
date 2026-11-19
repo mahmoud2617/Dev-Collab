@@ -41,37 +41,50 @@ public class Project {
 
     @OneToMany(
         mappedBy = "project",
-        cascade = CascadeType.REMOVE
+        cascade = CascadeType.REMOVE,
+        orphanRemoval = true
+    )
+    private Set<ProjectJoinRequest> projectJoinRequests = new HashSet<>();
+
+    @OneToMany(
+        mappedBy = "project",
+        cascade = CascadeType.REMOVE,
+        orphanRemoval = true
     )
     private Set<ProjectTechStack> techStacks = new HashSet<>();
 
     @OneToMany(
         mappedBy = "project",
-        cascade = CascadeType.REMOVE
+        cascade = CascadeType.REMOVE,
+        orphanRemoval = true
     )
     private Set<Task> tasks = new HashSet<>();
 
     @OneToMany(
         mappedBy = "project",
-        cascade = CascadeType.REMOVE
+        cascade = CascadeType.REMOVE,
+        orphanRemoval = true
     )
     private Set<File> files = new HashSet<>();
 
     @OneToMany(
         mappedBy = "project",
-        cascade = CascadeType.REMOVE
+        cascade = CascadeType.REMOVE,
+        orphanRemoval = true
     )
     private Set<ProjectMember> projectMembers = new HashSet<>();
 
     @OneToMany(
         mappedBy = "project",
-        cascade = CascadeType.REMOVE
+        cascade = CascadeType.REMOVE,
+        orphanRemoval = true
     )
     private List<Message> messages = new ArrayList<>();
 
     @OneToMany(
         mappedBy = "project",
-        cascade = CascadeType.REMOVE
+        cascade = CascadeType.REMOVE,
+        orphanRemoval = true
     )
     private List<ActivityLog> activityLog = new ArrayList<>();
 }

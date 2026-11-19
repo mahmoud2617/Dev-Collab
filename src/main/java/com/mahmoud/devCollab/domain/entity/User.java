@@ -59,6 +59,9 @@ public class User {
     )
     private List<UserSkill> userSkills = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user")
+    private Set<ProjectJoinRequest> projectJoinRequests = new HashSet<>();
+
     @OneToMany(mappedBy = "member")
     private Set<ProjectMember> memberships = new HashSet<>();
 

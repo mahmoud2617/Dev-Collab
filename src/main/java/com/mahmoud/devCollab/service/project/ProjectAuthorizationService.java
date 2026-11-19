@@ -17,7 +17,9 @@ public class ProjectAuthorizationService {
     ) {
         boolean authorized = currentUser.getMemberships().stream()
                     .anyMatch(projectMember ->
-                        memberRoles.contains(projectMember.getRole()) &&
+                        // since owner is authorized to manage them project.
+                        (Objects.equals(projectMember.getRole(), MemberRole.ADMIN) ||
+                        memberRoles.contains(projectMember.getRole())) &&
                         Objects.equals(projectMember.getProject().getId(), projectId)
                     );
 

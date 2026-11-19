@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/projects")
 @AllArgsConstructor
@@ -22,11 +24,11 @@ public class ProjectController {
         return projectService.getAllProjects(pageable);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{projectId}")
     public ProjectDto getProject(
-        @PathVariable Long id
+        @PathVariable Long projectId
     ) {
-        return projectService.getProjectDetails(id);
+        return projectService.getProjectDetails(projectId);
     }
 
     @PostMapping
@@ -36,29 +38,62 @@ public class ProjectController {
         return ResponseEntity.status(201).body(projectService.createProject(request));
     }
 
-    @PatchMapping("/{id}/change-name")
+    @GetMapping("/{projectId}/join-requests")
+    public ResponseEntity<List<ProjectJoinRequestDto>> getJoinRequests(
+        @PathVariable Long projectId
+    ) {
+        return ResponseEntity.ok().body(projectService.getJoinRequests(projectId));
+    }
+
+    @PostMapping("/{projectId}/join-requests")
+    public ResponseEntity<Void> sendJoinRequest(
+        @PathVariable Long projectId
+    ) {
+        projectService.sendJoinRequest(projectId);
+        return ResponseEntity.status(201).build();
+    }
+
+    @PostMapping("/{projectId}/join-requests/{userId}/accept")
+    public ResponseEntity<Void> acceptJoinRequest(
+        @PathVariable Long projectId,
+        @PathVariable Long userId
+    ) {
+        projectService.acceptJoinRequest(projectId, userId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{projectId}/join-requests/{userId}")
+    public ResponseEntity<Void> deleteJoinRequest(
+        @PathVariable Long projectId,
+        @PathVariable Long userId
+    ) {
+        projectService.deleteJoinRequest(projectId, userId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{projectId}/change-name")
     public ResponseEntity<Void> changeProjectName(
-        @PathVariable Long id,
+        @PathVariable Long projectId,
         @Valid @RequestBody ChangeProjectNameRequest request
     ) {
-        projectService.changeProjectName(id, request);
+        projectService.changeProjectName(projectId, request);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{id}/change-description")
+    @PatchMapping("/{projectId}/change-description")
     public ResponseEntity<Void> changeProjectDescription(
-        @PathVariable Long id,
+        @PathVariable Long projectId,
         @Valid @RequestBody ChangeProjectDescriptionRequest request
     ) {
-        projectService.changeProjectDescription(id, request);
+        projectService.changeProjectDescription(projectId, request);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{projectId}")
     public ResponseEntity<Void> deleteProject(
-        @PathVariable Long id
+        @PathVariable Long projectId
     ) {
-        projectService.deleteProject(id);
+        projectService.deleteProject(projectId);
         return ResponseEntity.noContent().build();
     }
 }

@@ -3,37 +3,45 @@ package com.mahmoud.devCollab.controller;
 import com.mahmoud.devCollab.dto.ChangeMemberRoleInProjectRequest;
 import com.mahmoud.devCollab.service.project.ProjectMemberService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/projects/{projectId}/members")
 @AllArgsConstructor
+@Validated
 public class ProjectMemberController {
     private final ProjectMemberService projectMemberService;
 
-    @PostMapping("/{id}")
-    public void addMemberToProject(
+    @PostMapping // no join request needed.
+    public ResponseEntity<Void> addUserToProject(
         @PathVariable Long projectId,
-        @PathVariable Long id
+        @RequestBody @NotNull @Positive Long userId
     ) {
-        projectMemberService.addMember(projectId, id);
+        projectMemberService.addUserToProject(projectId, userId);
+        return ResponseEntity.status(201).build();
     }
 
-    @PatchMapping("/{id}")
-    public void changeMemberRoleInTheProject(
+    @PatchMapping("/{memberId}")
+    public ResponseEntity<Void> changeMemberRoleInTheProject(
         @PathVariable Long projectId,
-        @PathVariable Long id,
+        @PathVariable Long memberId,
         @Valid @RequestBody ChangeMemberRoleInProjectRequest request
     ) {
-        projectMemberService.changeMemberRoleInTheProject(projectId, id, request);
+        projectMemberService.changeMemberRoleInTheProject(projectId, memberId, request);
+        return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{id}")
-    public void removeMemberFromProject(
+    @DeleteMapping("/{memberId}")
+    public ResponseEntity<Void> removeMemberFromProject(
         @PathVariable Long projectId,
-        @PathVariable Long id
+        @PathVariable Long memberId
     ) {
-        projectMemberService.removeMemberFromProject(projectId, id);
+        projectMemberService.removeMemberFromProject(projectId, memberId);
+        return ResponseEntity.noContent().build();
     }
 }
